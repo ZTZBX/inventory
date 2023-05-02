@@ -9,6 +9,12 @@ namespace inventory.Client
     {
         public ClientMain()
         {
+            EventHandlers["onClientResourceStart"] += new Action<string>(OnClientResourceStart);
+        }
+
+        private void OnClientResourceStart(string resourceName)
+        {
+            OpenNuiEvent();
         }
 
         static public void InventoryNui()
@@ -18,11 +24,25 @@ namespace inventory.Client
             SendNuiMessage(jsonString);
         }
 
-
-        [Command("inventory")]
-        public void HelloServer()
+        private async void OpenNuiEvent()
         {
-            InventoryNui();
+
+            while (true)
+            {
+                await Delay(0);
+                // G Key
+                if (IsControlJustReleased(0, 47))
+                {
+
+                    if (!Inventory.inventoryOpen)
+                    {
+                        InventoryNui();
+                        await Delay(100);
+                    }
+                    
+                }
+            }
         }
+        
     }
 }
