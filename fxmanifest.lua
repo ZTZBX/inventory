@@ -21,5 +21,6 @@ ui_pages {
 }
 
 dependencies {
+    "fivem-mysql",
     "core-ztzbx",
 }
