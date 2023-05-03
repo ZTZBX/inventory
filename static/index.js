@@ -144,7 +144,7 @@ $(function () {
   function openItemHandler() {
     let item = $(".item-grid").find(".item");
     let panel;
-    
+
     item.mouseenter(function () {
       if (!$(this).hasClass("empty")) {
         let type = $(this)
@@ -154,6 +154,8 @@ $(function () {
           .toLowerCase();
         panel = $(".panel." + type);
         panel.css("left", $(this).offset().left + 116).fadeIn(100);
+
+        
 
         $(this).mousedown(
           function (e) {
