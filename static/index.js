@@ -1,3 +1,4 @@
+window.executinIn = false;
 function generateItemInSlots(listOfItems) {
   //
   //     ITEM SLOT EXAMPLE OF CODE
@@ -49,31 +50,21 @@ function generateItemInSlots(listOfItems) {
   //      </div>
   //</div>
 
-  var slot_name = 'Money'
-  var slot_image_name = 'money.png'
-  var title_description = 'Money in hand'
-  var description = 'Although cash typically refers to money in hand.'
-  var cuantity = '1434$'
 
-  var list_of_slots = [
-    { "empty": false, "slot_name": "Money", "slot_image_name": "money.png", "title_description": title_description, "description": description, "cuantity": cuantity },
-    { "empty": true },
-    { "empty": true },
-    { "empty": true },
-    { "empty": true },
-    { "empty": true },
-    { "empty": true }
-  ]
+  var playerInventory = JSON.parse(listOfItems["data"]);
 
+  var list_of_slots = playerInventory
 
+  $("#itemsList").empty();
+  $(".panel").remove();
 
   for (let i = 0; i < list_of_slots.length; i++) {
-    if (list_of_slots[i]["empty"] == false) {
-      slot_name = list_of_slots[i]["slot_name"]
-      slot_image_name = list_of_slots[i]["slot_image_name"]
-      title_description = list_of_slots[i]["title_description"]
+    if (list_of_slots[i]["name"] != "empty") {
+      slot_name = list_of_slots[i]["name"]
+      slot_image_name = list_of_slots[i]["image"]
+      title_description = list_of_slots[i]["descriptiontitle"]
       description = list_of_slots[i]["description"]
-      cuantity = list_of_slots[i]["cuantity"]
+      cuantity = list_of_slots[i]["quantity"] +" "+ list_of_slots[i]["unit"]
 
       var slot = `
       <div class="item item-trade">
@@ -109,6 +100,7 @@ function generateItemInSlots(listOfItems) {
       </div>
       </div>
       `
+
       $("#itemsList").append(slot)
       $(".mainApp").append(panel)
 
@@ -121,13 +113,72 @@ function generateItemInSlots(listOfItems) {
 
 
 $(function () {
+  // Opens the individual inventory items
+  function openItemHandler() {
+    let item = $(".item-grid").find(".item");
+    let panel;
+    item.mouseenter(function () {
+      if (!$(this).hasClass("empty")) {
+        let type = $(this)
+          .find("h5")
+          .text()
+          .replace(/ /g, "")
+          .toLowerCase();
+        panel = $(".panel." + type);
+        panel.css("left", $(this).offset().left + 116).fadeIn(100);
+        console.log(type);
+      }
 
-  generateItemInSlots();
+    }).mouseleave(function () {
+      panel.fadeOut(100);
+    });
+  }
+
+  // Animates panel based on mouse movement on page
+  function panelMovement() {
+    let body = $("body");
+    let itemGrid = $(".item-grid");
+    let dimensions = {};
+    let maxMove = { x: 30, y: 5 };
+    let currentPos = { left: 100, top: 50 };
+
+    $(window).resize(function () {
+      dimensions.width = body.width();
+      dimensions.height = body.height();
+    }).resize();
+
+    // Default left positioning is in px, top is in %. Retains value type
+    body.mousemove(function (event) {
+      let percentageX = event.pageX / dimensions.width;
+      let percentageY = event.pageY / dimensions.height;
+      itemGrid.css({
+        left: currentPos.left - maxMove.x * percentageX,
+        top: currentPos.top - maxMove.y * percentageY + "%"
+      });
+    });
+  }
 
   window.addEventListener('message', function (event) {
     var item = event.data;
 
     if (item.showIn == true) {
+
+      fetch(`https://inventory/get_inventory`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: JSON.stringify({
+        })
+      }).then(resp => resp.json()).then(success => generateItemInSlots(success));
+
+      if (!window.executinIn){
+        window.setInterval(openItemHandler, 100);
+        window.setInterval(panelMovement, 100);
+        window.executinIn = true;
+      }
+      
+
       document.getElementsByClassName("mainApp")[0].style.display = 'block';
     } else {
       document.getElementsByClassName("mainApp")[0].style.display = 'none';
@@ -135,7 +186,6 @@ $(function () {
   });
 
   $("#exit").click(function () {
-
     fetch(`https://inventory/exit`, {
       method: 'POST',
       headers: {
@@ -145,112 +195,5 @@ $(function () {
       .catch(err => {
       });
   });
-
+  
 });
-
-
-
-(function ($) {
-  $(document).ready(function () {
-
-    // Opens the individual inventory items
-    function openItemHandler() {
-      let item = $(".item-grid").find(".item");
-      let panel;
-      item.mouseenter(function () {
-        if (!$(this).hasClass("empty")) {
-          let type = $(this)
-            .find("h5")
-            .text()
-            .replace(/ /g, "")
-            .toLowerCase();
-          panel = $(".panel." + type);
-          panel.css("left", $(this).offset().left + 116).fadeIn(100);
-        }
-      }).mouseleave(function () {
-        panel.fadeOut(100);
-      });
-    }
-
-    // Animates panel based on mouse movement on page
-    function panelMovement() {
-      let body = $("body");
-      let itemGrid = $(".item-grid");
-      let dimensions = {};
-      let maxMove = { x: 30, y: 5 };
-      let currentPos = { left: 100, top: 50 };
-
-      $(window).resize(function () {
-        dimensions.width = body.width();
-        dimensions.height = body.height();
-      }).resize();
-
-      // Default left positioning is in px, top is in %. Retains value type
-      body.mousemove(function (event) {
-        let percentageX = event.pageX / dimensions.width;
-        let percentageY = event.pageY / dimensions.height;
-        itemGrid.css({
-          left: currentPos.left - maxMove.x * percentageX,
-          top: currentPos.top - maxMove.y * percentageY + "%"
-        });
-      });
-    }
-
-    openItemHandler();
-    panelMovement();
-  });
-})(jQuery);
-
-
-(function ($) {
-  $(document).ready(function () {
-
-    // Opens the individual inventory items
-    function openItemHandler() {
-      let item = $(".item-grid").find(".item");
-      let panel;
-      item.mouseenter(function () {
-        if (!$(this).hasClass("empty")) {
-          let type = $(this)
-            .find("h5")
-            .text()
-            .replace(/ /g, "")
-            .toLowerCase();
-          panel = $(".panel." + type);
-          panel.css("left", $(this).offset().left + 116).fadeIn(100);
-          console.log(type);
-        }
-
-      }).mouseleave(function () {
-        panel.fadeOut(100);
-      });
-    }
-
-    // Animates panel based on mouse movement on page
-    function panelMovement() {
-      let body = $("body");
-      let itemGrid = $(".item-grid");
-      let dimensions = {};
-      let maxMove = { x: 30, y: 5 };
-      let currentPos = { left: 100, top: 50 };
-
-      $(window).resize(function () {
-        dimensions.width = body.width();
-        dimensions.height = body.height();
-      }).resize();
-
-      // Default left positioning is in px, top is in %. Retains value type
-      body.mousemove(function (event) {
-        let percentageX = event.pageX / dimensions.width;
-        let percentageY = event.pageY / dimensions.height;
-        itemGrid.css({
-          left: currentPos.left - maxMove.x * percentageX,
-          top: currentPos.top - maxMove.y * percentageY + "%"
-        });
-      });
-    }
-
-    openItemHandler();
-    panelMovement();
-  });
-})(jQuery);

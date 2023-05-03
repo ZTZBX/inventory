@@ -9,6 +9,26 @@ namespace inventory.Server
     {
         public InventoryData()
         {
+
+        }
+
+
+        public int GetInventorySize(string token)
+        {
+            string query = $"select maxslots from inventoryconfig as pinv RIGHT join players as player on player.username = pinv.username where player.token ='{token}'";
+            dynamic result = Exports["fivem-mysql"].raw(query);
+
+            if (result[0][0] == "")
+            {
+                string usernameQuery = $"SELECT username from players where token='{token}'";
+                dynamic username = Exports["fivem-mysql"].raw(usernameQuery);
+                query = $"INSERT INTO `inventoryconfig` (`username`) VALUES ('{username[0][0]}')";
+                Exports["fivem-mysql"].raw(query);
+                query = $"select maxslots from inventoryconfig as pinv RIGHT join players as player on player.username = pinv.username where player.token ='{token}'";
+                result = Exports["fivem-mysql"].raw(query);
+            }
+
+            return Int32.Parse(result[0][0]);
         }
 
         public bool CheckItemIn(string token, string itemname)
@@ -25,7 +45,7 @@ namespace inventory.Server
         public void AddItemToInventory(string token, string itemname, int quantity, string unit, string imageName, string descriptiontitle, string description)
         {
             if (CheckItemIn(token, itemname)) { return; }
-            string usernameQuery = $"SELECT username from player where token='{token}'";
+            string usernameQuery = $"SELECT username from players where token='{token}'";
             dynamic username = Exports["fivem-mysql"].raw(usernameQuery);
             string query = $"INSERT INTO `inventory` (`username`, `name`, `quantity`, `unit`, `image`, `descriptiontitle`, `description`) VALUES ('{username[0][0]}', '{itemname}', '{quantity.ToString()}', '{unit}', '{imageName}', '{descriptiontitle}', '{description}')";
             Exports["fivem-mysql"].raw(query);
@@ -34,7 +54,7 @@ namespace inventory.Server
         public void ChangeQuantityItem(string token, string itemname, int quantity)
         {
             if (!CheckItemIn(token, itemname)) { return; }
-            string usernameQuery = $"SELECT username from player where token='{token}'";
+            string usernameQuery = $"SELECT username from players where token='{token}'";
             dynamic username = Exports["fivem-mysql"].raw(usernameQuery);
             string query = $"UPDATE `inventory` SET `quantity` = '{quantity.ToString()}' WHERE `inventory`.`username` = '{username[0][0]}' AND `inventory`.`name` = '{itemname}'";
             Exports["fivem-mysql"].raw(query);
@@ -43,30 +63,34 @@ namespace inventory.Server
         public void DeleteItemFromInventory(string token, string itemname)
         {
             if (!CheckItemIn(token, itemname)) { return; }
-            string usernameQuery = $"SELECT username from player where token='{token}'";
+            string usernameQuery = $"SELECT username from players where token='{token}'";
             dynamic username = Exports["fivem-mysql"].raw(usernameQuery);
             string query = $"delete from inventory where username = '{username[0][0]}' and name = '{itemname}'";
             Exports["fivem-mysql"].raw(query);
         }
-        
-        public List<Dictionary<string, string>> GetItemsMetadata(string token, int quantity)
+
+        public List<Dictionary<string, string>> GetItemsMetadata(string token)
         {
-            Dictionary<string, string> r = new Dictionary<string, string>();
+            
             List<Dictionary<string, string>> listResult = new List<Dictionary<string, string>>();
 
-            string query = $"select name, quantity, unit, image, descriptiontitle, description from inventory as pinv RIGHT join players as player on player.username = pinv.username where player.token ='{token}'";
+            string query = $"select name, quantity, unit, image, descriptiontitle, description, slotposition from inventory as pinv RIGHT join players as player on player.username = pinv.username where player.token ='{token}'";
             dynamic result = Exports["fivem-mysql"].raw(query);
 
-            foreach (dynamic line in result)
+            if (result[0][0] != "")
             {
-                r.Add("name", line[0]);
-                r.Add("quantity", line[1]);
-                r.Add("unit", line[2]);
-                r.Add("image", line[3]);
-                r.Add("descriptiontitle", line[4]);
-                r.Add("description", line[5]);
-                listResult.Add(r);
-                r.Clear();
+                foreach (dynamic line in result)
+                {
+                    Dictionary<string, string> r = new Dictionary<string, string>();
+                    r.Add("name", line[0]);
+                    r.Add("quantity", line[1]);
+                    r.Add("unit", line[2]);
+                    r.Add("image", line[3]);
+                    r.Add("descriptiontitle", line[4]);
+                    r.Add("description", line[5]);
+                    r.Add("slotposition", line[6]);
+                    listResult.Add(r);
+                }
             }
 
             return listResult;

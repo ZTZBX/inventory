@@ -30,14 +30,16 @@ namespace inventory.Client
             while (true)
             {
                 await Delay(0);
+                if (!Inventory.playerHasToken) {continue;}
                 // G Key
                 if (IsControlJustReleased(0, 47))
                 {
-
                     if (!Inventory.inventoryOpen)
                     {
-                        InventoryNui();
+                        TriggerServerEvent("getInventory", Exports["core-ztzbx"].playerToken());
                         await Delay(100);
+                        InventoryNui();
+                        Inventory.inventoryOpen = true;
                     }
                     
                 }

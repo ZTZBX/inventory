@@ -8,6 +8,9 @@ namespace inventory.Client
 {
     static public class Inventory
     {
+        static public bool playerHasToken = false;
         static public bool inventoryOpen = false;
+
+        static public string content;
     }
 }
