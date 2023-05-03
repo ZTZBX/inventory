@@ -1,4 +1,31 @@
 window.executinIn = false;
+
+function getPosition(el) {
+  var xPos = 0;
+  var yPos = 0;
+
+  while (el) {
+    if (el.tagName == "BODY") {
+      // deal with browser quirks with body/window/document and page scroll
+      var xScroll = el.scrollLeft || document.documentElement.scrollLeft;
+      var yScroll = el.scrollTop || document.documentElement.scrollTop;
+
+      xPos += (el.offsetLeft - xScroll + el.clientLeft);
+      yPos += (el.offsetTop - yScroll + el.clientTop);
+    } else {
+      // for all other non-BODY elements
+      xPos += (el.offsetLeft - el.scrollLeft + el.clientLeft);
+      yPos += (el.offsetTop - el.scrollTop + el.clientTop);
+    }
+
+    el = el.offsetParent;
+  }
+  return {
+    x: xPos,
+    y: yPos
+  };
+}
+
 function generateItemInSlots(listOfItems) {
   //
   //     ITEM SLOT EXAMPLE OF CODE
@@ -64,10 +91,10 @@ function generateItemInSlots(listOfItems) {
       slot_image_name = list_of_slots[i]["image"]
       title_description = list_of_slots[i]["descriptiontitle"]
       description = list_of_slots[i]["description"]
-      cuantity = list_of_slots[i]["quantity"] +" "+ list_of_slots[i]["unit"]
+      cuantity = list_of_slots[i]["quantity"] + " " + list_of_slots[i]["unit"]
 
       var slot = `
-      <div class="item item-trade">
+      <div class="item item-trade" name="`+ list_of_slots[i]["slotposition"] + `">
       <h5>`+ slot_name + `</h5>
       <div class="item-img"><img src="./`+ slot_image_name + `"></div>
       `
@@ -117,6 +144,7 @@ $(function () {
   function openItemHandler() {
     let item = $(".item-grid").find(".item");
     let panel;
+    
     item.mouseenter(function () {
       if (!$(this).hasClass("empty")) {
         let type = $(this)
@@ -126,11 +154,20 @@ $(function () {
           .toLowerCase();
         panel = $(".panel." + type);
         panel.css("left", $(this).offset().left + 116).fadeIn(100);
-        console.log(type);
+
+        $(this).mousedown(
+          function (e) {
+            panel.fadeOut(100);
+          }
+        )
       }
 
     }).mouseleave(function () {
-      panel.fadeOut(100);
+      try {
+        panel.fadeOut(100);
+      } catch
+      { }
+
     });
   }
 
@@ -172,12 +209,12 @@ $(function () {
         })
       }).then(resp => resp.json()).then(success => generateItemInSlots(success));
 
-      if (!window.executinIn){
+      if (!window.executinIn) {
         window.setInterval(openItemHandler, 100);
         window.setInterval(panelMovement, 100);
         window.executinIn = true;
       }
-      
+
 
       document.getElementsByClassName("mainApp")[0].style.display = 'block';
     } else {
@@ -195,5 +232,5 @@ $(function () {
       .catch(err => {
       });
   });
-  
+
 });
