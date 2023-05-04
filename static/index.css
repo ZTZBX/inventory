@@ -224,15 +224,19 @@ h4 {
   top: 50%;
   transform: translateY(-50%);
   width: 484px;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 10px;
 }
 .item-grid .item {
   position: relative;
-  background: white;
+  background: rgba(255, 255, 255, 0.25);
   width: 112px;
   height: 112px;
   padding: 4px;
   float: left;
   overflow: hidden;
+  padding: 10px;
+  cursor: move;
 }
 .item-grid .item:not(:nth-child(4n + 1)) {
   margin-left: 12px;
@@ -324,9 +328,14 @@ h4 {
 }
 
 .mainApp {
-  display: none;
+  display: block;
 }
 
 #exit:hover {
   fill: #1f2029;
+}
+
+
+.item.over {
+  border: 3px dotted #666;
 }

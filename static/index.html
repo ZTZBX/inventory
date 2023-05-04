@@ -23,9 +23,82 @@
         
     </h1>
 
+
+
     
     <div class="item-grid" id="itemsList">
+        <div draggable="true" class="item item-trade" name="`+ list_of_slots[i]["slotposition"] + `">
+            <h5>Money</h5>
+            <div class="item-img"><img src="./money.png"></div>
+        </div>
+        <div draggable="true" class="item item-trade" name="`+ list_of_slots[i]["slotposition"] + `">
+            <h5>Money 2</h5>
+            <div class="item-img"><img src="./money.png"></div>
+        </div>
+        <div draggable="false" class="item empty"></div>
+        <div draggable="false" class="item empty"></div>
+        <div draggable="false" class="item empty"></div>
+        <div draggable="false" class="item empty"></div>
     </div>
+
+    <script>
+          document.addEventListener('DOMContentLoaded', (event) => {
+
+            function handleDragStart(e) {
+              dragSrcEl = this;
+
+                e.dataTransfer.effectAllowed = 'move';
+                e.dataTransfer.setData('text/html', this.innerHTML);
+              
+            }
+
+            function handleDrop(e) {
+                e.stopPropagation();
+              
+                if (dragSrcEl !== this) {
+                  dragSrcEl.innerHTML = this.innerHTML;
+                  this.innerHTML = e.dataTransfer.getData('text/html');
+                }
+              
+                return false;
+              }
+          
+            function handleDragEnd(e) {
+                items.forEach(function (item) {
+                  item.classList.remove('over');
+                });
+            }
+          
+            function handleDragOver(e) {
+              if (e.preventDefault) {
+                e.preventDefault();
+              }
+          
+              return false;
+            }
+          
+            function handleDragEnter(e) {
+              this.classList.add('over');
+            }
+          
+            function handleDragLeave(e) {
+              this.classList.remove('over');
+            }
+          
+            let items = document.querySelectorAll('.item-grid .item');
+            items.forEach(function(item) {
+                item.addEventListener('dragstart', handleDragStart);
+                item.addEventListener('dragover', handleDragOver);
+                item.addEventListener('dragenter', handleDragEnter);
+                item.addEventListener('dragleave', handleDragLeave);
+                item.addEventListener('dragend', handleDragEnd);
+                item.addEventListener('drop', handleDrop);
+              
+            });
+          });
+    </script>
+
+    
 </body>
 
 </html>
