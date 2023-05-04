@@ -1,30 +1,49 @@
 window.executinIn = false;
+window.itemStak;
 
-function getPosition(el) {
-  var xPos = 0;
-  var yPos = 0;
+function handleDragStart(e) {
+  dragSrcEl = this;
+  component.set("v.dragid", e.target.dataset.dragId);
+  e.dataTransfer.setData('Text', component.id);
+  console.log("ppee")
+  e.dataTransfer.effectAllowed = 'move';
+  e.dataTransfer.setData('text/html', this.innerHTML);
 
-  while (el) {
-    if (el.tagName == "BODY") {
-      // deal with browser quirks with body/window/document and page scroll
-      var xScroll = el.scrollLeft || document.documentElement.scrollLeft;
-      var yScroll = el.scrollTop || document.documentElement.scrollTop;
-
-      xPos += (el.offsetLeft - xScroll + el.clientLeft);
-      yPos += (el.offsetTop - yScroll + el.clientTop);
-    } else {
-      // for all other non-BODY elements
-      xPos += (el.offsetLeft - el.scrollLeft + el.clientLeft);
-      yPos += (el.offsetTop - el.scrollTop + el.clientTop);
-    }
-
-    el = el.offsetParent;
-  }
-  return {
-    x: xPos,
-    y: yPos
-  };
 }
+
+function handleDrop(e) {
+  e.stopPropagation();
+
+  if (dragSrcEl !== this) {
+    dragSrcEl.innerHTML = this.innerHTML;
+    this.innerHTML = e.dataTransfer.getData('text/html');
+  }
+
+  return false;
+}
+
+function handleDragEnd(e) {
+  items.forEach(function (item) {
+    item.classList.remove('over');
+  });
+}
+
+function handleDragOver(e) {
+  if (e.preventDefault) {
+    e.preventDefault();
+  }
+
+  return false;
+}
+
+function handleDragEnter(e) {
+  this.classList.add('over');
+}
+
+function handleDragLeave(e) {
+  this.classList.remove('over');
+}
+
 
 function generateItemInSlots(listOfItems) {
   //
@@ -94,11 +113,10 @@ function generateItemInSlots(listOfItems) {
       cuantity = list_of_slots[i]["quantity"] + " " + list_of_slots[i]["unit"]
 
       var slot = `
-      <div class="item item-trade" name="`+ list_of_slots[i]["slotposition"] + `">
+      <div class="item item-trade" id="`+ list_of_slots[i]["name"] + `" name="` + list_of_slots[i]["slotposition"] + `" draggable='true'>
       <h5>`+ slot_name + `</h5>
       <div class="item-img"><img src="./`+ slot_image_name + `"></div>
       `
-
       var panel = `
       <div class="panel panel-trade `+ slot_name.toLowerCase() + `">
       <div class="bar">
@@ -129,23 +147,57 @@ function generateItemInSlots(listOfItems) {
       `
 
       $("#itemsList").append(slot)
+
       $(".mainApp").append(panel)
 
     } else {
-      $("#itemsList").append(`<div class="item empty"></div>`)
+      $("#itemsList").append($(`<div class="item empty" name="` + list_of_slots[i]["slotposition"] + `"></div>`))
     }
+
   }
 
+  let item = $(".item-grid").find(".item");
+
+  item.draggable({
+    cancel: ".empty",
+    helper: "clone",
+    revert: true,
+    revertDuration: 0,
+    scroll: false,
+    start: function(e, ui) {
+      $(this).css('visibility', 'hidden');
+    },
+    stop: function() {
+      $(this).css('visibility', 'visible');
+    }
+  })
+  .droppable({
+    over: function(event, ui) {
+      $(this).effect("highlight", {}, 1000);
+    },
+    drop: function(event, ui) {
+       // Get drag & drop elements
+       var a = $(this);
+       var b = $(ui.draggable);
+ 
+       // Swap those elements
+       var tmp = $('<span>').hide();
+       a.before(tmp);
+       b.before(a);
+       tmp.replaceWith(b);
+    }
+  });
 }
 
 
 $(function () {
+  var dragElement = null;
+
   // Opens the individual inventory items
   function openItemHandler() {
     let item = $(".item-grid").find(".item");
     let panel;
-
-    item.mouseenter(function () {
+    item.mouseenter(function (e) {
       if (!$(this).hasClass("empty")) {
         let type = $(this)
           .find("h5")
@@ -154,8 +206,6 @@ $(function () {
           .toLowerCase();
         panel = $(".panel." + type);
         panel.css("left", $(this).offset().left + 116).fadeIn(100);
-
-        
 
         $(this).mousedown(
           function (e) {
@@ -217,8 +267,8 @@ $(function () {
         window.executinIn = true;
       }
 
-
       document.getElementsByClassName("mainApp")[0].style.display = 'block';
+
     } else {
       document.getElementsByClassName("mainApp")[0].style.display = 'none';
     }
@@ -235,6 +285,9 @@ $(function () {
       });
   });
 
+
+
 });
+
 
 

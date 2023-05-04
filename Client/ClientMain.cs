@@ -36,10 +36,11 @@ namespace inventory.Client
                 {
                     if (!Inventory.inventoryOpen)
                     {
+                        
                         TriggerServerEvent("getInventory", Exports["core-ztzbx"].playerToken());
-                        await Delay(100);
                         InventoryNui();
                         Inventory.inventoryOpen = true;
+                        await Delay(100);
                     }
                     
                 }

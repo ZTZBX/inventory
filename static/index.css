@@ -328,7 +328,7 @@ h4 {
 }
 
 .mainApp {
-  display: block;
+  display: none;
 }
 
 #exit:hover {
