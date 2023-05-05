@@ -45,6 +45,48 @@ function handleDragLeave(e) {
 }
 
 
+// Opens the individual inventory items
+function openItemHandler() {
+  let item = $(".item-grid").find(".item");
+  let panel;
+  item.mouseenter(function (e) {
+    if (!$(this).hasClass("empty")) {
+      let type = $(this)
+        .find("h5")
+        .text()
+        .replace(/ /g, "")
+        .toLowerCase();
+      panel = $(".panel." + type);
+      panel.css("left", $(this).offset().left + 116).fadeIn(100);
+
+      //width: 112px; to 120
+     //height: 112px; to 120
+
+     $(this).css('background-color', 'rgba(27, 27, 27, 0.7)')
+     $(this).css('color', 'white')
+
+      $(this).mousedown(
+        function (e) {
+          panel.fadeOut(100);
+        }
+      )
+    }
+
+  }).mouseleave(function () {
+    try {
+
+      panel.fadeOut(100);
+      if (!$(this).hasClass("empty")) {
+      $(this).css('background-color', 'rgba(27, 27, 27, 0.3)')
+      $(this).css('color', 'rgb(27, 27, 27)')
+      }
+      
+    } catch
+    { }
+
+  });
+}
+
 function generateItemInSlots(listOfItems) {
   //
   //     ITEM SLOT EXAMPLE OF CODE
@@ -196,7 +238,7 @@ function generateItemInSlots(listOfItems) {
             'Content-Type': 'application/json; charset=UTF-8',
           },
           body: JSON.stringify({
-            item_name: b.attr("id"),
+            itemname: b.attr("id"),
             position: b.attr("name")
           })
         });
@@ -208,42 +250,13 @@ function generateItemInSlots(listOfItems) {
         tmp.replaceWith(b);
       }
     });
+
+  openItemHandler()
 }
 
 
 $(function () {
   var dragElement = null;
-
-  // Opens the individual inventory items
-  function openItemHandler() {
-    let item = $(".item-grid").find(".item");
-    let panel;
-    item.mouseenter(function (e) {
-      if (!$(this).hasClass("empty")) {
-        let type = $(this)
-          .find("h5")
-          .text()
-          .replace(/ /g, "")
-          .toLowerCase();
-        panel = $(".panel." + type);
-        panel.css("left", $(this).offset().left + 116).fadeIn(100);
-
-        $(this).mousedown(
-          function (e) {
-            panel.fadeOut(100);
-          }
-        )
-      }
-
-    }).mouseleave(function () {
-      try {
-        panel.fadeOut(100);
-      } catch
-      { }
-
-    });
-  }
-
   // Animates panel based on mouse movement on page
   function panelMovement() {
     let body = $("body");
@@ -268,6 +281,8 @@ $(function () {
     });
   }
 
+  panelMovement()
+
   window.addEventListener('message', function (event) {
     var item = event.data;
 
@@ -282,11 +297,6 @@ $(function () {
         })
       }).then(resp => resp.json()).then(success => generateItemInSlots(success));
 
-      if (!window.executinIn) {
-        window.setInterval(openItemHandler, 100);
-        window.setInterval(panelMovement, 100);
-        window.executinIn = true;
-      }
 
       document.getElementsByClassName("mainApp")[0].style.display = 'block';
 

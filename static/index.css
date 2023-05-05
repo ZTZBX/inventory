@@ -48,6 +48,7 @@ h4 {
   width: 650px;
   background: #1f2029;
   border-top: 5px solid;
+  border-radius: 0.25em;
   position: relative;
   color: #9a9a9a;
   letter-spacing: 0.1em;
@@ -229,15 +230,17 @@ h4 {
 }
 .item-grid .item {
   position: relative;
-  background: rgba(255, 255, 255, 0.25);
+  background-color: rgba(27, 27, 27, 0.3);
   width: 112px;
   height: 112px;
   padding: 4px;
   float: left;
   overflow: hidden;
-  padding: 10px;
-  cursor: move;
+  border-radius: 0.25em;
+  color: rgb(27, 27, 27);
+
 }
+
 .item-grid .item:not(:nth-child(4n + 1)) {
   margin-left: 12px;
 }

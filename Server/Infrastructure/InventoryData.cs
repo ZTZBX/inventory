@@ -71,7 +71,6 @@ namespace inventory.Server
 
         public void ChangeItemPosition(string token, string itemname, string position)
         {
-            // TODO: CHECK THIS FUNCTION
             if (!CheckItemIn(token, itemname)) { return; }
 
             string queryUpdateMyPosition;
@@ -84,44 +83,50 @@ namespace inventory.Server
             string usernameQuery = $"SELECT username from players where token='{token}'";
             dynamic username = Exports["fivem-mysql"].raw(usernameQuery);
 
-            string itemSwapPosition = $"select itemname, position from inventory where username = '{username[0][0]}' and position = '{position}'";
+            string itemSwapPosition = $"select name from inventory where username = '{username[0][0]}' and slotposition = '{position}'";
             dynamic currentSwapItemPosition = Exports["fivem-mysql"].raw(itemSwapPosition);
-
+            
             // check if somebody in the position
-            if (currentSwapItemPosition[0][0] != "")
+            if (currentSwapItemPosition.Count > 0)
             {
                 itemInMovingPosition = true;
+
+                // check if i'am already in this position
+                if (currentSwapItemPosition[0][0] == itemname){return;}
             }
 
-            // check if i'am already in this position
-            if (currentSwapItemPosition[0][0] == itemname){return;}
-
             // Swaping positions with the item
-            myPositionQuery = $"select position from inventory where username = '{username[0][0]}' and itemname = '{itemname}'";
+            string myPositionQuery = $"select slotposition from inventory where username = '{username[0][0]}' and name = '{itemname}'";
             dynamic myPositionExec = Exports["fivem-mysql"].raw(myPositionQuery);
+
+            
 
             string myCurrentPosition = myPositionExec[0][0];
 
-            queryUpdateMyPosition = $"UPDATE `inventory` SET `position` = '{position}' WHERE `inventory`.`username` = '{username[0][0]}' AND `inventory`.`name` = '{itemname}'";
+            queryUpdateMyPosition = $"UPDATE `inventory` SET `slotposition` = '{position}' WHERE `inventory`.`username` = '{username[0][0]}' AND `inventory`.`name` = '{itemname}'";
             
             if (!itemInMovingPosition)
             {
-                Exports["fivem-mysql"].raw(queryUpdate);
+                Exports["fivem-mysql"].raw(queryUpdateMyPosition);
                 return;
+
             }
+
+
 
             // Firt null all positions to make constrain dont raise
             // In reality is not a null beacouse the field dont accept null values i set i very big value to do the swapp
-            queryUpdateOtherItemPositionWithMyNULL = $"UPDATE `inventory` SET `position` = '9998' WHERE `inventory`.`username` = '{username[0][0]}' AND `inventory`.`name` = '{currentItemPosition[0][0]}'";
-            queryUpdateMyPositionToNULL = $"UPDATE `inventory` SET `position` = '9999' WHERE `inventory`.`username` = '{username[0][0]}' AND `inventory`.`name` = '{itemname}'";
+            queryUpdateOtherItemPositionWithMyNULL = $"UPDATE `inventory` SET `slotposition` = '9998' WHERE `inventory`.`username` = '{username[0][0]}' AND `inventory`.`name` = '{currentSwapItemPosition[0][0]}'";
+            queryUpdateMyPositionToNULL = $"UPDATE `inventory` SET `slotposition` = '9999' WHERE `inventory`.`username` = '{username[0][0]}' AND `inventory`.`name` = '{itemname}'";
 
             Exports["fivem-mysql"].raw(queryUpdateOtherItemPositionWithMyNULL);
             Exports["fivem-mysql"].raw(queryUpdateMyPositionToNULL);
 
+    
             // Now we can swap the position between the items
-            queryUpdateOtherItemPositionWithMyPosition = $"UPDATE `inventory` SET `position` = '{myCurrentPosition}' WHERE `inventory`.`username` = '{username[0][0]}' AND `inventory`.`name` = '{currentItemPosition[0][0]}'";
+            queryUpdateOtherItemPositionWithMyPosition = $"UPDATE `inventory` SET `slotposition` = '{myCurrentPosition}' WHERE `inventory`.`username` = '{username[0][0]}' AND `inventory`.`name` = '{currentSwapItemPosition[0][0]}'";
 
-            Exports["fivem-mysql"].raw(queryUpdate);
+            Exports["fivem-mysql"].raw(queryUpdateMyPosition);
             Exports["fivem-mysql"].raw(queryUpdateOtherItemPositionWithMyPosition);
         }
 

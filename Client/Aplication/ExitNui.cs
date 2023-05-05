@@ -20,6 +20,8 @@ namespace inventory.Client
             SetNuiFocus(false, false);
             SendNuiMessage(jsonString);
             Inventory.inventoryOpen = false;
+
+            cb(new{data = "ok"});
         }
 
     }

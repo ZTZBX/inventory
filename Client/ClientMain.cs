@@ -38,9 +38,9 @@ namespace inventory.Client
                     {
                         
                         TriggerServerEvent("getInventory", Exports["core-ztzbx"].playerToken());
+                        await Delay(200);
                         InventoryNui();
                         Inventory.inventoryOpen = true;
-                        await Delay(100);
                     }
                     
                 }

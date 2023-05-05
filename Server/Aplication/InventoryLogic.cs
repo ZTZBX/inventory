@@ -13,12 +13,12 @@ namespace inventory.Server
         public InventoryLogic()
         {
             EventHandlers["getInventory"] += new Action<Player, string>(GetInventory);
-            EventHandlers["changeItemPosition"] += new Action<Player, string, string>(ChangeItemPosition);
+            EventHandlers["changeItemPosition"] += new Action<Player, string, string, string>(ChangeItemPosition);
         }
 
-        private void ChangeItemPosition([FromSource] Player user, string itemname, string position)
+        private void ChangeItemPosition([FromSource] Player user, string token, string itemname, string position)
         {
-            invData.ChangeItemPosition(itemname, position);
+           invData.ChangeItemPosition(token, itemname, position);
         }
 
         private void GetInventory([FromSource] Player user, string token)

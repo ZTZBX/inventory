@@ -6,7 +6,7 @@ using static CitizenFX.Core.Native.API;
 
 namespace inventory.Client
 {
-    public class ExitNui : BaseScript
+    public class ChangeItemPosition : BaseScript
     {
         public ChangeItemPosition()
         {
@@ -22,15 +22,14 @@ namespace inventory.Client
             object position;
 
 
-            if (!data.TryGetValue("item_name", out itemName)) { return; }
+            if (!data.TryGetValue("itemname", out itemName)) { return; }
             if (!data.TryGetValue("position", out position)) { return; }
 
             string currentItemName = itemName.ToString();
             string currentPosition = position.ToString();
 
-            TriggerServerEvent("changeItemPosition", currentItemName, currentPosition);
+            TriggerServerEvent("changeItemPosition", Exports["core-ztzbx"].playerToken(), currentItemName, currentPosition);
 
-            // TODO: CHECK IF THIS SOLVS THE PROBLEM WITH THE CALLS IN JV
             cb(new{data = "ok"});
         }
 
