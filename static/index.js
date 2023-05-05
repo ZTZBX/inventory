@@ -151,7 +151,7 @@ function generateItemInSlots(listOfItems) {
       $(".mainApp").append(panel)
 
     } else {
-      $("#itemsList").append($(`<div class="item empty" name="` + list_of_slots[i]["slotposition"] + `"></div>`))
+      $("#itemsList").append($(`<div class="item empty" id="empty" name="` + list_of_slots[i]["slotposition"] + `"></div>`))
     }
 
   }
@@ -164,29 +164,50 @@ function generateItemInSlots(listOfItems) {
     revert: true,
     revertDuration: 0,
     scroll: false,
-    start: function(e, ui) {
+    start: function (e, ui) {
       $(this).css('visibility', 'hidden');
     },
-    stop: function() {
+    stop: function () {
       $(this).css('visibility', 'visible');
     }
   })
-  .droppable({
-    over: function(event, ui) {
-      $(this).effect("highlight", {}, 1000);
-    },
-    drop: function(event, ui) {
-       // Get drag & drop elements
-       var a = $(this);
-       var b = $(ui.draggable);
- 
-       // Swap those elements
-       var tmp = $('<span>').hide();
-       a.before(tmp);
-       b.before(a);
-       tmp.replaceWith(b);
-    }
-  });
+    .droppable({
+      over: function (event, ui) {
+        $(this).effect("highlight", {}, 1000);
+      },
+      drop: function (event, ui) {
+        // Get drag & drop elements
+        var a = $(this);
+        var b = $(ui.draggable);
+
+        // TODO: DEBUG THIS
+
+        // Changing name between drag and drop
+        var helper_b = b.attr("name")
+        var helper_a = a.attr("name")
+        b.attr("name", helper_a)
+        a.attr("name", helper_b)
+
+        // now is time to change this in the database to
+
+        fetch(`https://inventory/change_item_position`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json; charset=UTF-8',
+          },
+          body: JSON.stringify({
+            item_name: b.attr("id"),
+            position: b.attr("name")
+          })
+        });
+
+        // Swap those elements
+        var tmp = $('<span>').hide();
+        a.before(tmp);
+        b.before(a);
+        tmp.replaceWith(b);
+      }
+    });
 }
 
 
