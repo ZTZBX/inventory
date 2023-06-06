@@ -115,8 +115,6 @@ namespace inventory.Client
                     }
                 }
 
-
-
             }
 
         }

@@ -70,9 +70,7 @@ namespace inventory.Server
 
                             if (itemInStack == false)
                             {
-                                Dictionary<string, int> currentItemOnGround = new Dictionary<string, int>();
-                                currentItemOnGround.Add(itemname, quantityi);
-                                ItemDrop.stackItemsGround[backpackOnGround.Key] = currentItemOnGround;
+                                ItemDrop.stackItemsGround[backpackOnGround.Key].Add(itemname, quantityi);
                             }
                             break;
                         };
@@ -99,6 +97,7 @@ namespace inventory.Server
                     ItemDrop.stackItemsGround.Add(id_ob, currentItemOnGround);
                     ItemDrop.backpackLocations.Add(id_ob, new List<float> { playerCoords.X, playerCoords.Y, playerCoords.Z - 1.0f });
                 }
+
             }
 
         }

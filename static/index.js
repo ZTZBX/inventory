@@ -32,6 +32,25 @@ function openDropItemMenu(name, quantity) {
 }
 
 
+function closeGetItemMenu() {
+  $(".get-item-quantity").css('visibility', 'hidden');
+  $("#quantityGet").val('0');
+  $("#rangevalGet").val('0');
+  $("#quantityGet").attr('max', '10');
+  $("#getQuantityName").attr('name', '');
+}
+
+function openGetItemMenu(name, quantity) {
+  $("#quantityGet").val('0');
+  $("#rangevalGet").val('0');
+  $("#quantityGet").attr('max', quantity.replace(/\D/g, ''));
+  $("#getQuantityName").attr('name', name);
+  $("#getQuantityName").attr('value', 'Get ' + name);
+  $(".get-item-quantity").css('visibility', 'visible');
+}
+
+
+
 function handleDragStart(e) {
   dragSrcEl = this;
   component.set("v.dragid", e.target.dataset.dragId);
@@ -145,16 +164,17 @@ function generateItemsInGround(listOfItems) {
 
   item.mouseenter(function (e) {
     if (!$(this).hasClass("empty")) {
-      $(this).css("border-style", "solid")
-      $(this).css("border-color", "white")
+      $(this).css('background-color', 'rgba(27, 27, 27, 0.7)')
+      $(this).css('color', 'white')
       $(this).mousedown(
         function (e) {
-          
+          openGetItemMenu($(this).attr('id'), $(this).attr('cuantity'));
         }
       )
     }
   }).mouseleave(function () {
-    $(this).css("border", "none")
+    $(this).css('background-color', 'rgba(27, 27, 27, 0.3)')
+      $(this).css('color', 'rgb(27, 27, 27)')
   });
 
 }
@@ -278,6 +298,7 @@ function generateItemInSlots(listOfItems) {
   backGround.click(
     function (e) {
       closeDropItemMenu();
+      closeGetItemMenu();
     }
   );
 
@@ -303,6 +324,7 @@ function generateItemInSlots(listOfItems) {
     start: function (e, ui) {
       $(this).css('visibility', 'hidden');
       $(".drop-item").css('visibility', 'visible');
+      closeGetItemMenu();
     },
     stop: function () {
       $(this).css('visibility', 'visible');
@@ -426,10 +448,29 @@ $(function () {
       });
 
     closeDropItemMenu();
+    closeGetItemMenu();
+  });
+
+  $("#getQuantityName").click(function () {
+    fetch(`https://inventory/get_item`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json; charset=UTF-8',
+      }, body: JSON.stringify({
+        item: $("#rangevalGet").attr("name"),
+        quantity: $("#rangevalDrop").val()
+      })
+    }).then()
+      .catch(err => {
+      });
+
+    closeDropItemMenu();
+    closeGetItemMenu();
   });
 
   $("#exit").click(function () {
     closeDropItemMenu();
+    closeGetItemMenu();
 
     fetch(`https://inventory/exit`, {
       method: 'POST',
