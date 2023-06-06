@@ -12,6 +12,8 @@ mkdir dist
 
 copy /y fxmanifest.lua dist
 xcopy /y /e Client\bin\Release\net452\publish\ dist\Client\
+copy /y Newtonsoft.Json.dll dist
+rm dist\Client\Newtonsoft.Json.dll
 xcopy /y /e Server\bin\Release\netstandard2.0\publish\ dist\Server\
 xcopy /y /e static\ dist\static\
 

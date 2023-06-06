@@ -1,7 +1,17 @@
 /*
     INVENTORY ZTZBX SQL SCRIPT
-    */
+*/
+    
+CREATE TABLE itemsmetadata (
+    `name` varchar(50) NOT NULL,
+    `image` varchar(100),
+    descriptiontitle varchar(100) NOT NULL,
+    `description` varchar(255) NOT NULL,
+    unit varchar(10) NOT NULL,
+    PRIMARY KEY(`name`)
+)ENGINE=InnoDB;
 
+-- I prefer to not realate the items metadata to to inventory for performace, but in code i handle all the logic
 CREATE TABLE inventory (
     username varchar(50) NOT NULL,
     slotposition int NOT NULL,

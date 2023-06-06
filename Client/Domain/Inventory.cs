@@ -10,7 +10,8 @@ namespace inventory.Client
     {
         static public bool playerHasToken = false;
         static public bool inventoryOpen = false;
-
         static public string content;
+
+        public static Dictionary<string, List<string>> ItemsMetaData = new Dictionary<string, List<string>>();
     }
 }

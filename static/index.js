@@ -1,11 +1,41 @@
 window.executinIn = false;
 window.itemStak;
 
+function changeInputValue() {
+
+  if (Number($("#quantityDrop").attr('max')) < Number($("#rangevalDrop").val())) {
+
+    $("#rangevalDrop").val(Number($("#quantityDrop").attr('max')))
+    $("#quantityDrop").val(Number($("#quantityDrop").attr('max')));
+
+  } else {
+    $('#quantityDrop').val(Number($("#rangevalDrop").val()))
+    $('#rangevalDrop').val(Number($("#rangevalDrop").val()))
+  }
+}
+
+function closeDropItemMenu() {
+  $(".drop-item-quantity").css('visibility', 'hidden');
+  $("#quantityDrop").val('0');
+  $("#rangevalDrop").val('0');
+  $("#quantityDrop").attr('max', '10');
+  $("#dropQuantityName").attr('name', '');
+}
+
+function openDropItemMenu(name, quantity) {
+  $("#quantityDrop").val('0');
+  $("#rangevalDrop").val('0');
+  $("#quantityDrop").attr('max', quantity.replace(/\D/g, ''));
+  $("#dropQuantityName").attr('name', name);
+  $("#dropQuantityName").attr('value', 'Drop ' + name);
+  $(".drop-item-quantity").css('visibility', 'visible');
+}
+
+
 function handleDragStart(e) {
   dragSrcEl = this;
   component.set("v.dragid", e.target.dataset.dragId);
   e.dataTransfer.setData('Text', component.id);
-  console.log("ppee")
   e.dataTransfer.effectAllowed = 'move';
   e.dataTransfer.setData('text/html', this.innerHTML);
 
@@ -49,6 +79,7 @@ function handleDragLeave(e) {
 function openItemHandler() {
   let item = $(".item-grid").find(".item");
   let panel;
+
   item.mouseenter(function (e) {
     if (!$(this).hasClass("empty")) {
       let type = $(this)
@@ -60,10 +91,10 @@ function openItemHandler() {
       panel.css("left", $(this).offset().left + 116).fadeIn(100);
 
       //width: 112px; to 120
-     //height: 112px; to 120
+      //height: 112px; to 120
 
-     $(this).css('background-color', 'rgba(27, 27, 27, 0.7)')
-     $(this).css('color', 'white')
+      $(this).css('background-color', 'rgba(27, 27, 27, 0.7)')
+      $(this).css('color', 'white')
 
       $(this).mousedown(
         function (e) {
@@ -77,14 +108,55 @@ function openItemHandler() {
 
       panel.fadeOut(100);
       if (!$(this).hasClass("empty")) {
-      $(this).css('background-color', 'rgba(27, 27, 27, 0.3)')
-      $(this).css('color', 'rgb(27, 27, 27)')
+        $(this).css('background-color', 'rgba(27, 27, 27, 0.3)')
+        $(this).css('color', 'rgb(27, 27, 27)')
       }
-      
+
     } catch
     { }
 
   });
+}
+
+function generateItemsInGround(listOfItems) {
+  var playerInventory = JSON.parse(listOfItems['data']);
+  var list_of_slots = playerInventory
+
+  $("#itemsListGround").empty();
+
+
+  for (let i = 0; i < list_of_slots.length; i++) {
+    slot_name = list_of_slots[i]["name"]
+    slot_image_name = list_of_slots[i]["image"]
+    cuantity = list_of_slots[i]["quantity"] + " " + list_of_slots[i]["unit"]
+
+    var slot = `
+      <div class="item item-trade" cuantity="`+ cuantity + `" id="` + list_of_slots[i]["name"] + `" name="` + list_of_slots[i]["slotposition"] + `" draggable='true'>
+      <h5 >`+ slot_name + `</h5>
+      <h5 class="itemtradequntitiy">`+ cuantity + `<h5>
+      <div class="item-img"><img src="./`+ slot_image_name + `"></div>
+      </div>
+      `
+    $("#itemsListGround").append(slot)
+  }
+
+
+  let item = $(".item-grid-drop-items").find(".item");
+
+  item.mouseenter(function (e) {
+    if (!$(this).hasClass("empty")) {
+      $(this).css("border-style", "solid")
+      $(this).css("border-color", "white")
+      $(this).mousedown(
+        function (e) {
+          
+        }
+      )
+    }
+  }).mouseleave(function () {
+    $(this).css("border", "none")
+  });
+
 }
 
 function generateItemInSlots(listOfItems) {
@@ -155,7 +227,7 @@ function generateItemInSlots(listOfItems) {
       cuantity = list_of_slots[i]["quantity"] + " " + list_of_slots[i]["unit"]
 
       var slot = `
-      <div class="item item-trade" id="`+ list_of_slots[i]["name"] + `" name="` + list_of_slots[i]["slotposition"] + `" draggable='true'>
+      <div class="item item-trade" cuantity="`+ cuantity + `" id="` + list_of_slots[i]["name"] + `" name="` + list_of_slots[i]["slotposition"] + `" draggable='true'>
       <h5>`+ slot_name + `</h5>
       <div class="item-img"><img src="./`+ slot_image_name + `"></div>
       `
@@ -180,9 +252,9 @@ function generateItemInSlots(listOfItems) {
       </div>
       <div class="legend">
       <div>
-      <div>a</div>
+      <div>D</div>
       <h3>Discard</h3>
-      <p>Drop in the ground</p>
+      <p>To drop the item, drag to the red area</p>
       </div>
       </div>
       </div>
@@ -195,10 +267,32 @@ function generateItemInSlots(listOfItems) {
     } else {
       $("#itemsList").append($(`<div class="item empty" id="empty" name="` + list_of_slots[i]["slotposition"] + `"></div>`))
     }
-
   }
 
   let item = $(".item-grid").find(".item");
+
+
+  let dropItem = $("#itemsDrop")
+  let backGround = $(".blur")
+
+  backGround.click(
+    function (e) {
+      closeDropItemMenu();
+    }
+  );
+
+  dropItem.droppable({
+    accept: '.item',
+    drop: function (event, ui) {
+      var a = $(this);
+      var b = $(ui.draggable);
+
+      var item_name = b.attr("id")
+      var item_cuantity = b.attr("cuantity")
+      openDropItemMenu(item_name, item_cuantity);
+
+    }
+  });
 
   item.draggable({
     cancel: ".empty",
@@ -208,9 +302,11 @@ function generateItemInSlots(listOfItems) {
     scroll: false,
     start: function (e, ui) {
       $(this).css('visibility', 'hidden');
+      $(".drop-item").css('visibility', 'visible');
     },
     stop: function () {
       $(this).css('visibility', 'visible');
+      $(".drop-item").css('visibility', 'hidden');
     }
   })
     .droppable({
@@ -250,7 +346,6 @@ function generateItemInSlots(listOfItems) {
         tmp.replaceWith(b);
       }
     });
-
   openItemHandler()
 }
 
@@ -263,7 +358,7 @@ $(function () {
     let itemGrid = $(".item-grid");
     let dimensions = {};
     let maxMove = { x: 30, y: 5 };
-    let currentPos = { left: 100, top: 50 };
+    let currentPos = { left: 275, top: 50 };
 
     $(window).resize(function () {
       dimensions.width = body.width();
@@ -297,6 +392,14 @@ $(function () {
         })
       }).then(resp => resp.json()).then(success => generateItemInSlots(success));
 
+      fetch(`https://inventory/get_on_ground_items`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: JSON.stringify({
+        })
+      }).then(resp => resp.json()).then(success => generateItemsInGround(success));
 
       document.getElementsByClassName("mainApp")[0].style.display = 'block';
 
@@ -305,7 +408,29 @@ $(function () {
     }
   });
 
+
+
+  $("#dropQuantityName").click(function () {
+
+
+    fetch(`https://inventory/drop_items`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json; charset=UTF-8',
+      }, body: JSON.stringify({
+        item: $("#dropQuantityName").attr("name"),
+        quantity: $("#rangevalDrop").val()
+      })
+    }).then()
+      .catch(err => {
+      });
+
+    closeDropItemMenu();
+  });
+
   $("#exit").click(function () {
+    closeDropItemMenu();
+
     fetch(`https://inventory/exit`, {
       method: 'POST',
       headers: {
@@ -315,9 +440,6 @@ $(function () {
       .catch(err => {
       });
   });
-
-
-
 });
 
 

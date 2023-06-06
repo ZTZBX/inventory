@@ -2,11 +2,12 @@ fx_version 'bodacious'
 game 'gta5'
 
 files {
-    'Client/*.dll',
     'static/index.css',
     'static/index.js',
     'static/index.html',
-    'static/money.png'
+    'static/money.png',
+    'static/water.png',
+    'Newtonsoft.Json.dll'
 }
 
 client_script 'Client/*.net.dll'
@@ -23,4 +24,5 @@ ui_pages {
 dependencies {
     "fivem-mysql",
     "core-ztzbx",
+    "notification"
 }
