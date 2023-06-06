@@ -30,12 +30,13 @@ namespace inventory.Client
 
             TriggerServerEvent("dropItems", Exports["core-ztzbx"].playerToken(), currentItemName, currentQuantity, Exports["core-ztzbx"].playerUsername());
 
+            cb(new { data = "ok" });
+
             string jsonString = "{\"showIn\": false }";
             SetNuiFocus(false, false);
             SendNuiMessage(jsonString);
             Inventory.inventoryOpen = false;
-            
-            cb(new { data = "ok" });
+
         }
 
     }

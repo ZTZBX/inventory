@@ -174,7 +174,7 @@ function generateItemsInGround(listOfItems) {
     }
   }).mouseleave(function () {
     $(this).css('background-color', 'rgba(27, 27, 27, 0.3)')
-      $(this).css('color', 'rgb(27, 27, 27)')
+    $(this).css('color', 'rgb(27, 27, 27)')
   });
 
 }
@@ -265,7 +265,7 @@ function generateItemInSlots(listOfItems) {
       <img src="./`+ slot_image_name + `">
       <h4>Current `+ slot_name + `</h4>
       <div class="inv-bar">
-      <h1>`+ cuantity + `</h1>
+      <h1 name="quantity_for_`+slot_name+`">`+ cuantity + `</h1>
       </div>
       </div>
       <hr>
@@ -433,8 +433,6 @@ $(function () {
 
 
   $("#dropQuantityName").click(function () {
-
-
     fetch(`https://inventory/drop_items`, {
       method: 'POST',
       headers: {
