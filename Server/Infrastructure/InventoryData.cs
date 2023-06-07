@@ -98,7 +98,7 @@ namespace inventory.Server
             int slot = CheckSlotPositionCanPlace(token, username[0][0]);
             if (slot == -1) { return; }
             string query = $"INSERT INTO `inventory` (`username`, `name`, `quantity`, `unit`, `image`, `descriptiontitle`, `description`, `slotposition`) VALUES ('{username[0][0]}', '{itemname}', '{quantity.ToString()}', '{unit}', '{imageName}', '{descriptiontitle}', '{description}', '{slot.ToString()}')";
-            Debug.WriteLine(query);
+
             Exports["fivem-mysql"].raw(query);
         }
 
