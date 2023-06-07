@@ -1,5 +1,6 @@
 window.executinIn = false;
 window.itemStak;
+window.itemsOnGround = []
 
 function changeInputValueDrop() {
 
@@ -154,6 +155,7 @@ function generateItemsInGround(listOfItems) {
   var playerInventory = JSON.parse(listOfItems['data']);
   var list_of_slots = playerInventory
 
+
   $("#itemsListGround").empty();
 
 
@@ -166,7 +168,8 @@ function generateItemsInGround(listOfItems) {
       <div class="item item-trade" cuantity="`+ cuantity + `" id="` + list_of_slots[i]["name"] + `" name="` + list_of_slots[i]["slotposition"] + `" draggable='true'>
       <h5 >`+ slot_name + `</h5>
       <h5 class="itemtradequntitiy">`+ cuantity + `<h5>
-      <div class="item-img"><img src="./`+ slot_image_name + `"></div>
+      <div class="item-img"><img id="`+ list_of_slots[i]["name"] + `_image" name="` + slot_image_name + `" src="./` + slot_image_name + `"></div>
+      <div style="display:none" id="unit_`+ list_of_slots[i]["name"] + `" name="` + list_of_slots[i]["unit"] + `">
       </div>
       `
     $("#itemsListGround").append(slot)
@@ -278,7 +281,7 @@ function generateItemInSlots(listOfItems) {
       <img src="./`+ slot_image_name + `">
       <h4>Current `+ slot_name + `</h4>
       <div class="inv-bar">
-      <h1 name="quantity_for_`+slot_name+`">`+ cuantity + `</h1>
+      <h1 name="quantity_for_`+ slot_name + `">` + cuantity + `</h1>
       </div>
       </div>
       <hr>
@@ -338,6 +341,7 @@ function generateItemInSlots(listOfItems) {
       $(this).css('visibility', 'hidden');
       $(".drop-item").css('visibility', 'visible');
       closeGetItemMenu();
+      closeDropItemMenu();
     },
     stop: function () {
       $(this).css('visibility', 'visible');
@@ -379,6 +383,9 @@ function generateItemInSlots(listOfItems) {
         a.before(tmp);
         b.before(a);
         tmp.replaceWith(b);
+
+
+
       }
     });
   openItemHandler()
@@ -417,6 +424,7 @@ $(function () {
     var item = event.data;
 
     if (item.showIn == true) {
+      window.itemsOnGround = []
 
       fetch(`https://inventory/get_inventory`, {
         method: 'POST',
@@ -448,20 +456,29 @@ $(function () {
 
 
   $("#dropQuantityName").click(function () {
+
+    item_name = $("#dropQuantityName").attr("name");
     fetch(`https://inventory/drop_items`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json; charset=UTF-8',
       }, body: JSON.stringify({
-        item: $("#dropQuantityName").attr("name"),
+        item: item_name,
         quantity: $("#rangevalDrop").val()
       })
     }).then()
       .catch(err => {
       });
 
+
+    addElementOnGround(
+      item_name,
+      $("#rangevalDrop").val(),
+    )
+
     closeDropItemMenu();
     closeGetItemMenu();
+
   });
 
   $("#getQuantityName").click(function () {
@@ -497,4 +514,41 @@ $(function () {
 });
 
 
+function updateProductInGroundMeta(data) {
+  var vd = JSON.parse(data["data"]);
 
+  for (let i = 0; i < window.itemsOnGround.length; i++) {
+    if (window.itemsOnGround[i]["name"] == vd["name"]) {
+      window.itemsOnGround[i]["image"] = vd["image"],
+      window.itemsOnGround[i]["unit"] = vd["unit"]
+    }
+  }
+
+  generateItemsInGround({ "data": JSON.stringify(window.itemsOnGround) })
+}
+
+function addElementOnGround(item_name, quantity) {
+  // check if already exists on items
+  let line_finded = false;
+  for (let i = 0; i < window.itemsOnGround.length; i++) {
+    if (window.itemsOnGround[i]["name"] == item_name) {
+      window.itemsOnGround[i]["quantity"] += Number(quantity)
+      line_finded = true;
+    }
+  }
+
+  fetch(`https://inventory/get_item_meta_data`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json; charset=UTF-8',
+    },
+    body: JSON.stringify({
+      item: item_name
+    })
+  }).then(resp => resp.json()).then(success => updateProductInGroundMeta(success));
+
+  if (!line_finded) {
+    window.itemsOnGround.push({ "name": item_name, "quantity": Number(quantity) })
+  }
+
+}
