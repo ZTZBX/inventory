@@ -31,14 +31,14 @@
     <div class="drop-item-quantity" id="itemsDropQuantity" name="itemsDropQuantity">
         <label for="customRange" class="form-label" style="color: #fff;">QUANTITY</label>
         <input id="quantityDrop" type="range" class="form-range custom-range" id="formControlRange" value="0" step="1" max="10" onInput="$('#rangevalDrop').val($(this).val())">
-        <input type="number" id="rangevalDrop" onInput="changeInputValue()" value="0" style="color: #1f2029; width: 70px;"></input>
+        <input type="number" id="rangevalDrop" onInput="changeInputValueDrop()" value="0" style="color: #1f2029; width: 70px;"></input>
         <input  id="dropQuantityName" type="button" style="float: right;" class="btn btn-light"></input >
     </div>
 
     <div class="get-item-quantity" id="itemsGetQuantity" name="itemsGetQuantity">
         <label for="customRange" class="form-label" style="color: #fff;">QUANTITY</label>
         <input id="quantityGet" type="range" class="form-range custom-range" id="formControlRange" value="0" step="1" max="10" onInput="$('#rangevalGet').val($(this).val())">
-        <input type="number" id="rangevalGet" onInput="changeInputValue()" value="0" style="color: #1f2029; width: 70px;"></input>
+        <input type="number" id="rangevalGet" onInput="changeInputValueGet()" value="0" style="color: #1f2029; width: 70px;"></input>
         <input  id="getQuantityName" type="button" style="float: right;" class="btn btn-light"></input >
     </div>
 

@@ -12,8 +12,6 @@ namespace inventory.Client
     public class ItemsDropInteraction : BaseScript
     {
 
-        private Dictionary<string, int> CurrentBackPack = new Dictionary<string, int>();
-
         public ItemsDropInteraction()
         {
             EventHandlers["setDropItems"] += new Action<string>(setDropItems);
@@ -25,7 +23,8 @@ namespace inventory.Client
 
         private void GetOnGroundItems(IDictionary<string, object> data, CallbackDelegate cb)
         {
-            if (this.CurrentBackPack.Count == 0)
+
+            if (ItemsDroped.CurrentBackPack.Count == 0)
             {
                 cb(new { data = "[]" });
                 return;
@@ -33,14 +32,14 @@ namespace inventory.Client
 
             List<Dictionary<string, string>> listOfGroundObjects = new List<Dictionary<string, string>>();
 
-            foreach (var item in this.CurrentBackPack)
-             {
-                 Dictionary<string, string> currentItem = new Dictionary<string, string>();
-                
-                 currentItem.Add("name", Inventory.ItemsMetaData[item.Key][0]);
-                 currentItem.Add("image", Inventory.ItemsMetaData[item.Key][1]);
-                 currentItem.Add("quantity", item.Value.ToString());
-                 currentItem.Add("unit", Inventory.ItemsMetaData[item.Key][4]);
+            foreach (var item in ItemsDroped.CurrentBackPack)
+            {
+                Dictionary<string, string> currentItem = new Dictionary<string, string>();
+
+                currentItem.Add("name", Inventory.ItemsMetaData[item.Key][0]);
+                currentItem.Add("image", Inventory.ItemsMetaData[item.Key][1]);
+                currentItem.Add("quantity", item.Value.ToString());
+                currentItem.Add("unit", Inventory.ItemsMetaData[item.Key][4]);
 
                 listOfGroundObjects.Add(currentItem);
             }
@@ -58,9 +57,6 @@ namespace inventory.Client
         {
             Vector3 currectCoords;
 
-            int counterShowed = 20;
-            bool showNotf = false;
-            bool counterStart = false;
             while (true)
             {
                 await Delay(500);
@@ -82,37 +78,22 @@ namespace inventory.Client
                             2.0f
                         ))
                         {
-                            showNotf = true;
                             TriggerServerEvent("getCurrentBackPack", backpacks.Key);
-                            await Delay(500);
-
+                            ItemsDroped.CurrectBackPackIdObject = backpacks.Key;
                         }
                         else
                         {
-                            this.CurrentBackPack.Clear();
-                            showNotf = false;
-                            counterStart = false;
-                            counterShowed = 20;
+                            ItemsDroped.CurrentBackPack.Clear();
+                            ItemsDroped.CurrectBackPackIdObject = -1;
                         }
 
                     }
 
                 }
-
-                if (showNotf && counterShowed == 20)
+                else
                 {
-                    Exports["notification"].send("Dear " + Exports["core-ztzbx"].playerUsername(), "Backpack on ground", "Press <G> to interact with the backpack on ground!");
-                    counterStart = true;
-                }
-
-                if (counterStart)
-                {
-                    counterShowed -= 1;
-                    if (counterShowed == 0)
-                    {
-                        counterStart = false;
-                        counterShowed = 20;
-                    }
+                    ItemsDroped.CurrentBackPack.Clear();
+                    ItemsDroped.CurrectBackPackIdObject = -1;
                 }
 
             }
@@ -131,7 +112,7 @@ namespace inventory.Client
         {
             if (backpack != null && backpack.Length > 0)
             {
-                this.CurrentBackPack = JsonConvert.DeserializeObject<Dictionary<string, int>>(backpack);
+                ItemsDroped.CurrentBackPack = JsonConvert.DeserializeObject<Dictionary<string, int>>(backpack);
             }
         }
 

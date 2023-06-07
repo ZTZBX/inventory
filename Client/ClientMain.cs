@@ -13,7 +13,20 @@ namespace inventory.Client
         {
             EventHandlers["onClientResourceStart"] += new Action<string>(OnClientResourceStart);
             EventHandlers["updateItemsMetaData"] += new Action<string>(UpdateItemsMetaData);
+            EventHandlers["updateInventory"] += new Action<string>(UpdateInventory);
+            EventHandlers["deleteObjectI"] += new Action<int>(DeleteObjectI);
 
+
+        }
+
+        private void DeleteObjectI(int objI)
+        {
+            
+        }
+
+        private void UpdateInventory(string info)
+        {
+            TriggerServerEvent("getInventory", Exports["core-ztzbx"].playerToken());
         }
 
         private void OnClientResourceStart(string resourceName)

@@ -63,21 +63,54 @@ namespace inventory.Server
             return true;
         }
 
+
+        public int CheckSlotPositionCanPlace(string token, string username)
+        {
+
+            int size = GetInventorySize(token);
+
+            string query = $"select slotposition from `inventory` where `username`='{username}'";
+            dynamic slotsUsed = Exports["fivem-mysql"].raw(query);
+
+            List<int> positions = new List<int>();
+
+            foreach (var s in slotsUsed)
+            {
+                positions.Add(Int32.Parse(s[0]));
+            }
+
+            for (int i = 1; i <= size; i++)
+            {
+                if (!positions.Contains(i))
+                {
+                    return i;
+                }
+            }
+
+            return -1;
+
+        }
+
         public void AddItemToInventory(string token, string itemname, int quantity, string unit, string imageName, string descriptiontitle, string description)
         {
-            if (CheckItemIn(token, itemname)) { return; }
             string usernameQuery = $"SELECT username from players where token='{token}'";
             dynamic username = Exports["fivem-mysql"].raw(usernameQuery);
-            string query = $"INSERT INTO `inventory` (`username`, `name`, `quantity`, `unit`, `image`, `descriptiontitle`, `description`) VALUES ('{username[0][0]}', '{itemname}', '{quantity.ToString()}', '{unit}', '{imageName}', '{descriptiontitle}', '{description}')";
+            int slot = CheckSlotPositionCanPlace(token, username[0][0]);
+            if (slot == -1) { return; }
+            string query = $"INSERT INTO `inventory` (`username`, `name`, `quantity`, `unit`, `image`, `descriptiontitle`, `description`, `slotposition`) VALUES ('{username[0][0]}', '{itemname}', '{quantity.ToString()}', '{unit}', '{imageName}', '{descriptiontitle}', '{description}', '{slot.ToString()}')";
+            Debug.WriteLine(query);
             Exports["fivem-mysql"].raw(query);
         }
 
-        public void ChangeQuantityItem(string token, string itemname, int quantity)
+        public void AddItemQuantityInInventory(string token, string itemname, int quantity)
         {
             if (!CheckItemIn(token, itemname)) { return; }
             string usernameQuery = $"SELECT username from players where token='{token}'";
             dynamic username = Exports["fivem-mysql"].raw(usernameQuery);
-            string query = $"UPDATE `inventory` SET `quantity` = '{quantity.ToString()}' WHERE `inventory`.`username` = '{username[0][0]}' AND `inventory`.`name` = '{itemname}'";
+            string getQuantity = $"SELECT quantity from `inventory` where `username` = '{username[0][0]}' and `name` = '{itemname}'";
+            dynamic dbQuantity = Exports["fivem-mysql"].raw(getQuantity);
+            int quantityResult = Int32.Parse(dbQuantity[0][0]) + quantity;
+            string query = $"UPDATE `inventory` SET `quantity` = '{quantityResult.ToString()}' WHERE `inventory`.`username` = '{username[0][0]}' AND `inventory`.`name` = '{itemname}'";
             Exports["fivem-mysql"].raw(query);
         }
 

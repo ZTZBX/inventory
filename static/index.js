@@ -1,7 +1,7 @@
 window.executinIn = false;
 window.itemStak;
 
-function changeInputValue() {
+function changeInputValueDrop() {
 
   if (Number($("#quantityDrop").attr('max')) < Number($("#rangevalDrop").val())) {
 
@@ -11,6 +11,19 @@ function changeInputValue() {
   } else {
     $('#quantityDrop').val(Number($("#rangevalDrop").val()))
     $('#rangevalDrop').val(Number($("#rangevalDrop").val()))
+  }
+}
+
+function changeInputValueGet() {
+
+  if (Number($("#quantityGet").attr('max')) < Number($("#rangevalGet").val())) {
+
+    $("#rangevalGet").val(Number($("#quantityGet").attr('max')))
+    $("#quantityGet").val(Number($("#quantityGet").attr('max')));
+
+  } else {
+    $('#quantityGet').val(Number($("#rangevalGet").val()))
+    $('#rangevalGet').val(Number($("#rangevalGet").val()))
   }
 }
 
@@ -426,6 +439,8 @@ $(function () {
       document.getElementsByClassName("mainApp")[0].style.display = 'block';
 
     } else {
+      closeGetItemMenu();
+      closeDropItemMenu();
       document.getElementsByClassName("mainApp")[0].style.display = 'none';
     }
   });
@@ -455,8 +470,8 @@ $(function () {
       headers: {
         'Content-Type': 'application/json; charset=UTF-8',
       }, body: JSON.stringify({
-        item: $("#rangevalGet").attr("name"),
-        quantity: $("#rangevalDrop").val()
+        item: $("#getQuantityName").attr("name"),
+        quantity: $("#rangevalGet").val()
       })
     }).then()
       .catch(err => {

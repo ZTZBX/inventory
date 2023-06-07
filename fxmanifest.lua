@@ -26,3 +26,8 @@ dependencies {
     "core-ztzbx",
     "notification"
 }
+
+client_exports {
+    "getItemMeta",
+    "addItemInventory"
+}

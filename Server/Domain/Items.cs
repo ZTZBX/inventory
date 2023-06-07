@@ -11,5 +11,7 @@ namespace inventory.Server
 
         public static Dictionary<string, List<string>> data = new Dictionary<string, List<string>>();
 
+        public static List<Dictionary<string, string>> inInventory = new List<Dictionary<string, string>>();
+
     }
 }

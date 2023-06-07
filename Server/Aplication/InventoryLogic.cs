@@ -150,6 +150,8 @@ namespace inventory.Server
                 }
             }
 
+
+            Items.inInventory = result;
             TriggerClientEvent(user, "setInventory", JsonConvert.SerializeObject(result));
 
         }
