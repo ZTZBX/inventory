@@ -1,6 +1,8 @@
 window.executinIn = false;
 window.itemStak;
 window.itemsOnGround = []
+window.itemsOnGroundPreview = []
+window.itemsUpdatedOnGround = {}
 
 function changeInputValueDrop() {
 
@@ -58,8 +60,8 @@ function openGetItemMenu(name, quantity) {
   $("#quantityGet").val('0');
   $("#rangevalGet").val('0');
   $("#quantityGet").attr('max', quantity.replace(/\D/g, ''));
-  $("#getQuantityName").attr('name', name);
-  $("#getQuantityName").attr('value', 'Get ' + name);
+  $("#getQuantityName").attr('name', name.replace('_ground', ''));
+  $("#getQuantityName").attr('value', 'Get ' + name.replace('_ground', ''));
   $(".get-item-quantity").css('visibility', 'visible');
 }
 
@@ -158,11 +160,19 @@ function generateItemsInGround(listOfItems) {
 
   for (let i = 0; i < list_of_slots.length; i++) {
     slot_name = list_of_slots[i]["name"]
+
+    if (window.itemsOnGroundPreview.includes(slot_name)) {
+      $("#" + list_of_slots[i]["name"] + "_ground").remove()
+    }
+    else {
+      window.itemsOnGroundPreview.push(slot_name)
+    }
+
     slot_image_name = list_of_slots[i]["image"]
     cuantity = list_of_slots[i]["quantity"] + " " + list_of_slots[i]["unit"]
 
     var slot = `
-      <div class="item item-trade" cuantity="`+ cuantity + `" id="` + list_of_slots[i]["name"] + `" name="` + list_of_slots[i]["slotposition"] + `" draggable='true'>
+      <div class="item item-trade" cuantity="`+ list_of_slots[i]["quantity"] + `" id="` + list_of_slots[i]["name"] + `_ground" draggable='true'>
       <h5 >`+ slot_name + `</h5>
       <h5 class="itemtradequntitiy">`+ cuantity + `<h5>
       <div class="item-img"><img id="`+ list_of_slots[i]["name"] + `_image" name="` + slot_image_name + `" src="./` + slot_image_name + `"></div>
@@ -170,6 +180,7 @@ function generateItemsInGround(listOfItems) {
       </div>
       `
     $("#itemsListGround").append(slot)
+
   }
 
 
@@ -278,7 +289,7 @@ function generateItemInSlots(listOfItems) {
       <img src="./`+ slot_image_name + `">
       <h4>Current `+ slot_name + `</h4>
       <div class="inv-bar">
-      <h1 name="quantity_for_`+ slot_name + `">` + cuantity + `</h1>
+      <h1 id="quantity_for_`+slot_name+`">` + cuantity + `</h1>
       </div>
       </div>
       <hr>
@@ -423,6 +434,8 @@ $(function () {
     if (item.showIn == true) {
       window.itemsOnGround = []
       $("#itemsListGround").empty();
+      window.itemsOnGroundPreview = [];
+      window.itemsUpdatedOnGround = {};
 
       fetch(`https://inventory/get_inventory`, {
         method: 'POST',
@@ -500,6 +513,8 @@ $(function () {
     closeDropItemMenu();
     closeGetItemMenu();
     $("#itemsListGround").empty();
+    window.itemsUpdatedOnGround = {};
+    window.itemsOnGroundPreview = [];
 
     fetch(`https://inventory/exit`, {
       method: 'POST',
@@ -519,7 +534,17 @@ function updateProductInGroundMeta(data) {
   for (let i = 0; i < window.itemsOnGround.length; i++) {
     if (window.itemsOnGround[i]["name"] == vd["name"]) {
       window.itemsOnGround[i]["image"] = vd["image"],
-      window.itemsOnGround[i]["unit"] = vd["unit"]
+        window.itemsOnGround[i]["unit"] = vd["unit"]
+
+      // check if already this item is on ground 
+      if ($("#" + item_name + "_ground").length) {
+        if (window.itemsUpdatedOnGround["#" + item_name + "_ground"] === undefined)
+        {
+          window.itemsOnGround[i]["quantity"] += Number($("#" + item_name + "_ground").attr("cuantity"))
+          window.itemsUpdatedOnGround["#" + item_name + "_ground"] = true
+        }
+        
+      }
     }
   }
 
@@ -535,6 +560,11 @@ function addElementOnGround(item_name, quantity) {
       line_finded = true;
     }
   }
+
+  // updating the quantity of the inventory
+  $("#quantity_for_" + item_name).text(Number(Number($("#quantity_for_" + item_name).text().split(" ")[0]) - quantity)+" "+$("#quantity_for_" + item_name).text().split(" ")[1])
+
+  
 
   fetch(`https://inventory/get_item_meta_data`, {
     method: 'POST',
