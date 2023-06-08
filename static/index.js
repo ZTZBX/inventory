@@ -156,9 +156,6 @@ function generateItemsInGround(listOfItems) {
   var list_of_slots = playerInventory
 
 
-  $("#itemsListGround").empty();
-
-
   for (let i = 0; i < list_of_slots.length; i++) {
     slot_name = list_of_slots[i]["name"]
     slot_image_name = list_of_slots[i]["image"]
@@ -425,6 +422,7 @@ $(function () {
 
     if (item.showIn == true) {
       window.itemsOnGround = []
+      $("#itemsListGround").empty();
 
       fetch(`https://inventory/get_inventory`, {
         method: 'POST',
@@ -501,6 +499,7 @@ $(function () {
   $("#exit").click(function () {
     closeDropItemMenu();
     closeGetItemMenu();
+    $("#itemsListGround").empty();
 
     fetch(`https://inventory/exit`, {
       method: 'POST',
