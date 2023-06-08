@@ -22,6 +22,8 @@ namespace inventory.Client
             Inventory.inventoryOpen = false;
 
             cb(new{data = "ok"});
+
+            DisplayRadar(true);
         }
 
     }

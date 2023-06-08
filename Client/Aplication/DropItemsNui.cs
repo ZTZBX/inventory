@@ -32,6 +32,10 @@ namespace inventory.Client
 
             cb(new { data = "ok" });
 
+            
+            TriggerServerEvent("getCurrentBackPack", ItemsDroped.CurrectBackPackIdObject);
+            TriggerServerEvent("getInventory", Exports["core-ztzbx"].playerToken());
+
         }
 
     }

@@ -46,6 +46,7 @@ namespace inventory.Client
 
             cb(new { data = JsonConvert.SerializeObject(listOfGroundObjects) });
 
+
         }
 
         private void OnClientResourceStart(string resourceName)

@@ -59,6 +59,7 @@ namespace inventory.Client
             string jsonString = "{\"showIn\": true }";
             SetNuiFocus(true, true);
             SendNuiMessage(jsonString);
+            DisplayRadar(false);
         }
 
         private async void OpenNuiEvent()

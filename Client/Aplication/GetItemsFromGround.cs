@@ -27,10 +27,12 @@ namespace inventory.Client
             string currentItemName = item.ToString();
             int currentQuantity = Int32.Parse(quantity.ToString());
 
+        
+            
+
             if (ItemsDroped.CurrentBackPack[currentItemName] >= currentQuantity && currentQuantity != 0)
             {
 
-                Debug.WriteLine($"{currentItemName} {currentQuantity}");
                 TriggerServerEvent("addItemsInInentoryFromGround",
                     Exports["core-ztzbx"].playerToken(),
                     ItemsDroped.CurrectBackPackIdObject,

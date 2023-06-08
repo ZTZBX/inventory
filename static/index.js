@@ -271,7 +271,7 @@ function generateItemInSlots(listOfItems) {
       cuantity = list_of_slots[i]["quantity"] + " " + list_of_slots[i]["unit"]
 
       var slot = `
-      <div class="item item-trade" cuantity="`+ cuantity + `" id="` + list_of_slots[i]["name"] + `" name="` + list_of_slots[i]["slotposition"] + `" draggable='true'>
+      <div class="item item-trade" cuantity="`+ cuantity + `" id="`+list_of_slots[i]["name"]+`" name="` + list_of_slots[i]["slotposition"] + `" draggable='true'>
       <h5>`+ slot_name + `</h5>
       <div class="item-img"><img src="./`+ slot_image_name + `"></div>
       `
@@ -564,7 +564,10 @@ function addElementOnGround(item_name, quantity) {
   // updating the quantity of the inventory
   $("#quantity_for_" + item_name).text(Number(Number($("#quantity_for_" + item_name).text().split(" ")[0]) - quantity)+" "+$("#quantity_for_" + item_name).text().split(" ")[1])
 
-  
+  if (Number($("#quantity_for_" + item_name).text().split(" ")[0]) == 0)
+  {
+    $("#"+item_name).remove()
+  }
 
   fetch(`https://inventory/get_item_meta_data`, {
     method: 'POST',
