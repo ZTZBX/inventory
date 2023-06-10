@@ -16,8 +16,6 @@ namespace inventory.Client
 
         private void ChangeItemPositionNui(IDictionary<string, object> data, CallbackDelegate cb)
         {
-            // TODO: DEBUG THIS
-
             object itemName;
             object position;
 

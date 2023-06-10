@@ -31,7 +31,7 @@ namespace inventory.Server
                 int PlayerTargetNetworkId = Exports["core-ztzbx"].getPlayerNetworkIdFromUsername(username);
                 Vector3 playerCoords = GetEntityCoords(NetworkGetEntityFromNetworkId(PlayerTargetNetworkId));
 
-                uint backpack = (uint)GetHashKey("p_michael_backpack_s");
+                uint box = (uint)GetHashKey("prop_cs_cardbox_01");
 
                 // checking if already backpack on zone
                 if (ItemDrop.backpackLocations.Count != 0)
@@ -81,8 +81,9 @@ namespace inventory.Server
 
                 if (newBackPack)
                 {
+
                     int id_ob = CreateObject(
-                            (int)backpack,
+                            (int)box,
                             playerCoords.X,
                             playerCoords.Y,
                             playerCoords.Z - 1.0f,

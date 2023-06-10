@@ -7,6 +7,12 @@ files {
     'static/index.html',
     'static/money.png',
     'static/water.png',
+    'static/cap.png',
+    'static/tshirt.png',
+    'static/rubber-gloves.png',
+    'static/trousers.png',
+    'static/sneakers.png',
+    'static/backpack.png',
     'Newtonsoft.Json.dll'
 }
 

@@ -16,7 +16,6 @@ namespace inventory.Client
 
         private void DropItems(IDictionary<string, object> data, CallbackDelegate cb)
         {
-            // TODO: DEBUG THIS
 
             object item;
             object quantity;

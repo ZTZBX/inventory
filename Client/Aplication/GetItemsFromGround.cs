@@ -14,6 +14,20 @@ namespace inventory.Client
         {
             RegisterNuiCallbackType("get_item");
             EventHandlers["__cfx_nui:get_item"] += new Action<IDictionary<string, object>, CallbackDelegate>(GetItem);
+            EventHandlers["deleteClosestItemBox"] += new Action<string>(DeleteClosestItemBox);
+        }
+
+        private void DeleteClosestItemBox(string info)
+        {
+            uint box = (uint)GetHashKey("prop_cs_cardbox_01");
+            Vector3 pedCoords = GetEntityCoords(PlayerPedId(), false);
+            var obj = GetClosestObjectOfType(pedCoords.X, pedCoords.Y, pedCoords.Z, 5.0f, box, false, false, false);
+
+            if (DoesEntityExist(obj))
+            {
+                DeleteObject(ref obj);
+            }
+
         }
 
         private void GetItem(IDictionary<string, object> data, CallbackDelegate cb)

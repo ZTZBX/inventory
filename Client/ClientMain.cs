@@ -14,14 +14,7 @@ namespace inventory.Client
             EventHandlers["onClientResourceStart"] += new Action<string>(OnClientResourceStart);
             EventHandlers["updateItemsMetaData"] += new Action<string>(UpdateItemsMetaData);
             EventHandlers["updateInventory"] += new Action<string>(UpdateInventory);
-            EventHandlers["deleteObjectI"] += new Action<int>(DeleteObjectI);
 
-
-        }
-
-        private void DeleteObjectI(int objI)
-        {
-            
         }
 
         private void UpdateInventory(string info)
@@ -65,15 +58,14 @@ namespace inventory.Client
         private async void OpenNuiEvent()
         {
             // importing prop for ground objects
-            uint backpack = (uint)GetHashKey("p_michael_backpack_s");
-            RequestModel(backpack);
+            uint box = (uint)GetHashKey("prop_cs_cardbox_01");
+            RequestModel(box);
 
-            while (HasModelLoaded(backpack) == false)
+            while (HasModelLoaded(box) == false)
             {
-                RequestModel(backpack);
+                RequestModel(box);
                 await Delay(100);
             }
-
 
             while (true)
             {
@@ -89,6 +81,32 @@ namespace inventory.Client
                         await Delay(200);
                         InventoryNui();
                         Inventory.inventoryOpen = true;
+
+                        Vector3 pedCoords = GetEntityCoords(PlayerPedId(), false);
+
+                        
+
+                        int playerClone = ClonePed(
+                        PlayerPedId(), 
+                        0.0f, 
+                        false, 
+                        false
+                        );
+                        SetEntityCoords(playerClone, pedCoords.X-2.0f, pedCoords.Y, pedCoords.Z + 3.0f, false, false, false, false);
+
+                        FreezeEntityPosition(playerClone, true);
+                        SetEntityInvincible(playerClone, true);
+
+                        SetEntityHeading(playerClone, 180.0f);
+
+
+                        Vector3 pedClone = GetEntityCoords(playerClone, false);
+
+                        int cam_zoom = CreateCamWithParams("DEFAULT_SCRIPTED_CAMERA", pedClone.X - 1.0f, pedClone.Y - 3.0f, pedClone.Z, 0, 0, 0, GetGameplayCamFov(), true, 0);
+                        ClearFocus();
+                        SetCamActive(cam_zoom, true);
+                        RenderScriptCams(true, true, 1000, true, false);
+
                     }
 
                 }

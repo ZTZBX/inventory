@@ -4,6 +4,74 @@ window.itemsOnGround = []
 window.itemsOnGroundPreview = []
 window.itemsUpdatedOnGround = {}
 
+
+function generateClothes() {
+  `
+  <div class="item item-trade">
+  <div class="item-img" id="headCharacter" ><img src="./money.png"></div>
+  </div>
+  `
+
+  let test = {
+    "head": null,
+    "body": null,
+    "gloves": null,
+    "pants": null,
+    "shoes": null,
+    "backpack": null
+  }
+
+  for (let key in test) {
+    var slot;
+    if (test[key] == null) {
+      slot = `
+      <div class="item empty" id="`+key+`Character" style="padding: 5px;">
+            <div class="charter_item `+key+`"></div>
+      </div>
+      `
+    }
+
+    $("#itemsOnCharacter").append(slot)
+  }
+
+  let item = $(".item-on-character").find(".item");
+
+  item.draggable({
+    cancel: ".empty",
+    helper: "clone",
+    revert: true,
+    revertDuration: 0,
+    scroll: false,
+    start: function (e, ui) {
+      $(this).css('visibility', 'hidden');
+      $(".drop-item").css('visibility', 'visible');
+      closeGetItemMenu();
+      closeDropItemMenu();
+    },
+    stop: function () {
+      $(this).css('visibility', 'visible');
+      $(".drop-item").css('visibility', 'hidden');
+    }
+  })
+    .droppable({
+      over: function (event, ui) {
+        $(this).effect("highlight", {}, 1000);
+      },
+      drop: function (event, ui) {
+        // Get drag & drop elements
+        var a = $(this);
+        var b = $(ui.draggable);
+
+        // Changing name between drag and drop
+        var typeOfCharacterChange = a.attr("id")
+        var ItemToChange = b.attr("id")
+      }
+    });
+
+
+  
+}
+
 function changeInputValueDrop() {
 
   if (Number($("#quantityDrop").attr('max')) < Number($("#rangevalDrop").val())) {
@@ -128,7 +196,7 @@ function openItemHandler() {
       //width: 112px; to 120
       //height: 112px; to 120
 
-      $(this).css('background-color', 'rgba(27, 27, 27, 0.7)')
+      $(this).css('background-color', 'rgba(27, 27, 27, 0.9)')
       $(this).css('color', 'white')
 
       $(this).mousedown(
@@ -143,8 +211,8 @@ function openItemHandler() {
 
       panel.fadeOut(100);
       if (!$(this).hasClass("empty")) {
-        $(this).css('background-color', 'rgba(27, 27, 27, 0.3)')
-        $(this).css('color', 'rgb(27, 27, 27)')
+        $(this).css('background-color', 'rgba(27, 27, 27, 0.5)')
+        $(this).css('color', 'rgb(185, 185, 185)')
       }
 
     } catch
@@ -188,7 +256,7 @@ function generateItemsInGround(listOfItems) {
 
   item.mouseenter(function (e) {
     if (!$(this).hasClass("empty")) {
-      $(this).css('background-color', 'rgba(27, 27, 27, 0.7)')
+      $(this).css('background-color', 'rgba(27, 27, 27, 0.9)')
       $(this).css('color', 'white')
       $(this).mousedown(
         function (e) {
@@ -197,8 +265,8 @@ function generateItemsInGround(listOfItems) {
       )
     }
   }).mouseleave(function () {
-    $(this).css('background-color', 'rgba(27, 27, 27, 0.3)')
-    $(this).css('color', 'rgb(27, 27, 27)')
+    $(this).css('background-color', 'rgba(27, 27, 27, 0.5)')
+    $(this).css('color', 'rgb(185, 185, 185)')
   });
 
 }
@@ -271,7 +339,7 @@ function generateItemInSlots(listOfItems) {
       cuantity = list_of_slots[i]["quantity"] + " " + list_of_slots[i]["unit"]
 
       var slot = `
-      <div class="item item-trade" cuantity="`+ cuantity + `" id="`+list_of_slots[i]["name"]+`" name="` + list_of_slots[i]["slotposition"] + `" draggable='true'>
+      <div class="item item-trade" cuantity="`+ cuantity + `" id="` + list_of_slots[i]["name"] + `" name="` + list_of_slots[i]["slotposition"] + `" draggable='true'>
       <h5>`+ slot_name + `</h5>
       <div class="item-img"><img src="./`+ slot_image_name + `"></div>
       `
@@ -289,7 +357,7 @@ function generateItemInSlots(listOfItems) {
       <img src="./`+ slot_image_name + `">
       <h4>Current `+ slot_name + `</h4>
       <div class="inv-bar">
-      <h1 id="quantity_for_`+slot_name+`">` + cuantity + `</h1>
+      <h1 id="quantity_for_`+ slot_name + `">` + cuantity + `</h1>
       </div>
       </div>
       <hr>
@@ -365,8 +433,6 @@ function generateItemInSlots(listOfItems) {
         var a = $(this);
         var b = $(ui.draggable);
 
-        // TODO: DEBUG THIS
-
         // Changing name between drag and drop
         var helper_b = b.attr("name")
         var helper_a = a.attr("name")
@@ -391,9 +457,6 @@ function generateItemInSlots(listOfItems) {
         a.before(tmp);
         b.before(a);
         tmp.replaceWith(b);
-
-
-
       }
     });
   openItemHandler()
@@ -434,6 +497,7 @@ $(function () {
     if (item.showIn == true) {
       window.itemsOnGround = []
       $("#itemsListGround").empty();
+      $("#itemsOnCharacter").empty();
       window.itemsOnGroundPreview = [];
       window.itemsUpdatedOnGround = {};
 
@@ -454,6 +518,8 @@ $(function () {
         body: JSON.stringify({
         })
       }).then(resp => resp.json()).then(success => generateItemsInGround(success));
+
+      generateClothes();
 
       document.getElementsByClassName("mainApp")[0].style.display = 'block';
 
@@ -507,12 +573,18 @@ $(function () {
 
     closeDropItemMenu();
     closeGetItemMenu();
+
+    addElemenFromGround(
+      $("#getQuantityName").attr("name"),
+      $("#rangevalGet").val(),
+    )
   });
 
   $("#exit").click(function () {
     closeDropItemMenu();
     closeGetItemMenu();
     $("#itemsListGround").empty();
+    $("#itemsOnCharacter").empty();
     window.itemsUpdatedOnGround = {};
     window.itemsOnGroundPreview = [];
 
@@ -538,12 +610,11 @@ function updateProductInGroundMeta(data) {
 
       // check if already this item is on ground 
       if ($("#" + item_name + "_ground").length) {
-        if (window.itemsUpdatedOnGround["#" + item_name + "_ground"] === undefined)
-        {
+        if (window.itemsUpdatedOnGround["#" + item_name + "_ground"] === undefined) {
           window.itemsOnGround[i]["quantity"] += Number($("#" + item_name + "_ground").attr("cuantity"))
           window.itemsUpdatedOnGround["#" + item_name + "_ground"] = true
         }
-        
+
       }
     }
   }
@@ -551,7 +622,16 @@ function updateProductInGroundMeta(data) {
   generateItemsInGround({ "data": JSON.stringify(window.itemsOnGround) })
 }
 
+
+function addElemenFromGround(item_name, quantity) {
+  $("#quantity_for_" + item_name).text(Number(Number($("#quantity_for_" + item_name).text().split(" ")[0]) + quantity) + " " + $("#quantity_for_" + item_name).text().split(" ")[1])
+}
+
 function addElementOnGround(item_name, quantity) {
+
+  if (quantity == 0) {
+    return;
+  }
   // check if already exists on items
   let line_finded = false;
   for (let i = 0; i < window.itemsOnGround.length; i++) {
@@ -562,11 +642,10 @@ function addElementOnGround(item_name, quantity) {
   }
 
   // updating the quantity of the inventory
-  $("#quantity_for_" + item_name).text(Number(Number($("#quantity_for_" + item_name).text().split(" ")[0]) - quantity)+" "+$("#quantity_for_" + item_name).text().split(" ")[1])
+  $("#quantity_for_" + item_name).text(Number(Number($("#quantity_for_" + item_name).text().split(" ")[0]) - quantity) + " " + $("#quantity_for_" + item_name).text().split(" ")[1])
 
-  if (Number($("#quantity_for_" + item_name).text().split(" ")[0]) == 0)
-  {
-    $("#"+item_name).remove()
+  if (Number($("#quantity_for_" + item_name).text().split(" ")[0]) == 0) {
+    $("#" + item_name).remove()
   }
 
   fetch(`https://inventory/get_item_meta_data`, {

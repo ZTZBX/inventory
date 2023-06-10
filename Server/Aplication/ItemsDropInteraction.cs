@@ -62,7 +62,7 @@ namespace inventory.Server
                 {
                     ItemDrop.backpackLocations.Remove(backpackId);
                     ItemDrop.stackItemsGround.Remove(backpackId);
-                    TriggerClientEvent("deleteObjectI", backpackId);
+                    TriggerClientEvent(user, "deleteClosestItemBox", "1234");
                 }
                 else
                 {

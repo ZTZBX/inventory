@@ -288,30 +288,53 @@ h4 {
   gap: 10px;
 }
 
+.item-on-character {
+  position: absolute;
+  right: 90px;
+  top: 45%;
+  transform: translateY(-50%);
+  height: 400px;
+  width: 135px;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 10px;
+}
+
 .item-grid-drop-items .item {
   position: relative;
-  background-color: rgba(27, 27, 27, 0.3);
+  background-color: rgba(27, 27, 27, 0.5);
   width: 125px;
   height: 125px;
   padding: 4px;
   float: left;
   overflow: hidden;
   border-radius: 0.25em;
-  color: rgb(27, 27, 27);
+  color: rgb(185, 185, 185);
   margin-top: 0.5rem;
-
 }
+
 
 .item-grid .item {
   position: relative;
-  background-color: rgba(27, 27, 27, 0.3);
+  background-color: rgba(27, 27, 27, 0.5);
   width: 112px;
   height: 112px;
   padding: 4px;
   float: left;
   overflow: hidden;
   border-radius: 0.25em;
-  color: rgb(27, 27, 27);
+  color: rgb(185, 185, 185);
+}
+
+.item-on-character .item {
+  position: relative;
+  background-color: rgba(27, 27, 27, 0.5);
+  width: 80px;
+  height: 80px;
+  padding: 4px;
+  float: left;
+  overflow: hidden;
+  border-radius: 0.25em;
+  color: rgb(185, 185, 185);
 }
 
 
@@ -324,6 +347,12 @@ h4 {
   margin-top: 10px;
 }
 
+.item-on-character .item:not(:nth-child(4n + 1)) {
+  margin-top: 10px;
+}
+
+
+
 .item-grid .item:nth-child(n + 5) {
   margin-top: 12px;
 }
@@ -332,10 +361,21 @@ h4 {
   margin-top: 12px;
 }
 
+.item-on-character .item:nth-child(n + 5) {
+  margin-top: 12px;
+}
+
 .item-grid .item .item-img {
   position: absolute;
-  bottom: 4px;
+  bottom: 5px;
   width: 98px;
+}
+
+.item-on-character .item .item-img {
+  position: absolute;
+  bottom: 15px;
+  width: 98px;
+  left: 10px;
 }
 
 .item-grid-drop-items .item .item-img {
@@ -350,6 +390,12 @@ h4 {
   display: block;
   margin: auto;
 }
+
+.item-on-character .item .item-img img {
+  width: 64px;
+  display: block;
+}
+
 
 .item-grid-drop-items .item .item-img img {
   width: 82px;
@@ -397,6 +443,10 @@ h4 {
   background: transparent;
 }
 
+.item-on-character .item.item-trade .item-img {
+  background: transparent;
+}
+
 .item-grid-drop-items .item.item-trade .item-img {
   background: transparent;
 }
@@ -435,7 +485,7 @@ h4 {
   animation-delay: 1.8s;
   animation-timing-function: ease;
 }
- 
+
 .item-grid-drop-items .item.item-tech h5 {
   white-space: nowrap;
   overflow: hidden;
@@ -459,8 +509,13 @@ h4 {
   left: 7px;
 }
 
+
 .item-grid .item.empty {
-  background: rgba(255, 255, 255, 0.25);
+  background: rgba(255, 255, 255, 0.4);
+}
+
+.item-on-character .item.empty {
+  background: rgba(255, 255, 255, 0.4);
 }
 
 @keyframes scrolling-text {
@@ -479,10 +534,8 @@ h4 {
   z-index: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(97, 97, 97, 0.7);
   background-size: cover;
   background-repeat: no-repeat;
-  filter: blur(100px);
 }
 
 .mainApp {
@@ -518,13 +571,13 @@ h4 {
   bottom: 10%;
   left: 40%;
   z-index: 100;
-  background-color: rgba(27, 27, 27, 0.3);
+  background-color: rgba(27, 27, 27, 0.5);
   width: 260px;
   height: 125px;
   padding: 10px;
   overflow: hidden;
   border-radius: 0.25em;
-  color: rgb(27, 27, 27);
+  color: rgb(185, 185, 185);
 }
 
 .get-item-quantity {
@@ -534,13 +587,13 @@ h4 {
   bottom: 10%;
   left: 40%;
   z-index: 100;
-  background-color: rgba(27, 27, 27, 0.3);
+  background-color: rgba(27, 27, 27, 0.5);
   width: 260px;
   height: 125px;
   padding: 10px;
   overflow: hidden;
   border-radius: 0.25em;
-  color: rgb(27, 27, 27);
+  color: rgb(185, 185, 185);
 }
 
 @keyframes color-change {
@@ -593,9 +646,35 @@ h4 {
   background: #1f2029;
 }
 
-.itemtradequntitiy 
-{
+.itemtradequntitiy {
   color: white;
   font-size: small;
   bottom: 0;
+}
+
+.charter_item {
+  height: 64px;
+  width: 64px;
+  opacity: 0.4;
+  margin-left: 3px;
+}
+
+.head {
+  background-image: url("./cap.png");
+}
+
+.body {
+  background-image: url("./tshirt.png");
+}
+.gloves {
+  background-image: url("./rubber-gloves.png");
+}
+.pants {
+  background-image: url("./trousers.png");
+}
+.shoes {
+  background-image: url("./sneakers.png");
+}
+.backpack {
+  background-image: url("./backpack.png");
 }
