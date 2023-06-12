@@ -91,13 +91,13 @@ namespace inventory.Server
 
         }
 
-        public void AddItemToInventory(string token, string itemname, int quantity, string unit, string imageName, string descriptiontitle, string description)
+        public void AddItemToInventory(string token, string itemname, int quantity)
         {
             string usernameQuery = $"SELECT username from players where token='{token}'";
             dynamic username = Exports["fivem-mysql"].raw(usernameQuery);
             int slot = CheckSlotPositionCanPlace(token, username[0][0]);
             if (slot == -1) { return; }
-            string query = $"INSERT INTO `inventory` (`username`, `name`, `quantity`, `unit`, `image`, `descriptiontitle`, `description`, `slotposition`) VALUES ('{username[0][0]}', '{itemname}', '{quantity.ToString()}', '{unit}', '{imageName}', '{descriptiontitle}', '{description}', '{slot.ToString()}')";
+            string query = $"INSERT INTO `inventory` (`username`, `name`, `quantity`, `slotposition`) VALUES ('{username[0][0]}', '{itemname}', '{quantity.ToString()}', '{slot.ToString()}')";
 
             Exports["fivem-mysql"].raw(query);
         }
@@ -187,22 +187,33 @@ namespace inventory.Server
 
             List<Dictionary<string, string>> listResult = new List<Dictionary<string, string>>();
 
-            string query = $"select name, quantity, unit, image, descriptiontitle, description, slotposition from inventory as pinv RIGHT join players as player on player.username = pinv.username where player.token ='{token}'";
+            string query = $"select name, quantity, slotposition from inventory as pinv RIGHT join players as player on player.username = pinv.username where player.token ='{token}'";
             dynamic result = Exports["fivem-mysql"].raw(query);
+
+            string itemData = $"select name, image, descriptiontitle, `description`, `type`, unit from itemsmetadata";
+            dynamic metaDataProd = Exports["fivem-mysql"].raw(itemData);
 
             if (result[0][0] != "")
             {
                 foreach (dynamic line in result)
                 {
-                    Dictionary<string, string> r = new Dictionary<string, string>();
-                    r.Add("name", line[0]);
-                    r.Add("quantity", line[1]);
-                    r.Add("unit", line[2]);
-                    r.Add("image", line[3]);
-                    r.Add("descriptiontitle", line[4]);
-                    r.Add("description", line[5]);
-                    r.Add("slotposition", line[6]);
-                    listResult.Add(r);
+
+                    foreach (dynamic mT in metaDataProd)
+                    {
+                        if (mT[0] == line[0])
+                        {
+                            Dictionary<string, string> r = new Dictionary<string, string>();
+                            r.Add("name", line[0]);
+                            r.Add("quantity", line[1]);
+                            r.Add("unit", mT[5]);
+                            r.Add("image", mT[1]);
+                            r.Add("descriptiontitle", mT[2]);
+                            r.Add("description", mT[3]);
+                            r.Add("slotposition", line[2]);
+                            listResult.Add(r);
+                            break;
+                        }
+                    }
                 }
             }
 

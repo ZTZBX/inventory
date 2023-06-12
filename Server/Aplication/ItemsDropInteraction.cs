@@ -80,11 +80,7 @@ namespace inventory.Server
                 invData.AddItemToInventory(
                 token,
                 Items.data[itemName][0],
-                itemQuantityToAddInInventory,
-                Items.data[itemName][4],
-                Items.data[itemName][1],
-                Items.data[itemName][2],
-                Items.data[itemName][3]
+                itemQuantityToAddInInventory
             );
             }
             else

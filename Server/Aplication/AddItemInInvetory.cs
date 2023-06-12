@@ -34,7 +34,7 @@ namespace inventory.Server
 
 
             
-            invData.AddItemToInventory(token, Items.data[item][0], quantity, Items.data[item][4], Items.data[item][1], Items.data[item][2], Items.data[item][3] );
+            invData.AddItemToInventory(token, Items.data[item][0], quantity);
     
 
             TriggerClientEvent(user, "updateInventory");

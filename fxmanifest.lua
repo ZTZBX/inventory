@@ -13,6 +13,7 @@ files {
     'static/trousers.png',
     'static/sneakers.png',
     'static/backpack.png',
+    'static/AirJordan11.png',
     'Newtonsoft.Json.dll'
 }
 
