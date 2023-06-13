@@ -23,7 +23,8 @@ ui_pages {
 dependencies {
     "fivem-mysql",
     "core-ztzbx",
-    "notification"
+    "notification",
+    "player"
 }
 
 client_exports {

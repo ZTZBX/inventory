@@ -25,8 +25,8 @@ function generateClothes() {
     var slot;
     if (test[key] == null) {
       slot = `
-      <div class="item empty" id="`+key+`Character" style="padding: 5px;">
-            <div class="charter_item `+key+`"></div>
+      <div class="item empty" id="`+ key + `Character" style="padding: 5px;">
+            <div class="charter_item `+ key + `"></div>
       </div>
       `
     }
@@ -65,11 +65,26 @@ function generateClothes() {
         // Changing name between drag and drop
         var typeOfCharacterChange = a.attr("id")
         var ItemToChange = b.attr("id")
+
+        console.log(typeOfCharacterChange);
+        console.log(ItemToChange);
+
+        fetch(`https://inventory/change_clothes`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json; charset=UTF-8',
+          }, body: JSON.stringify({
+            itemtype: typeOfCharacterChange,
+            itemname: ItemToChange
+          })
+        }).then()
+          .catch(err => {
+          });
       }
     });
 
 
-  
+
 }
 
 function changeInputValueDrop() {

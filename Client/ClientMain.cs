@@ -78,14 +78,13 @@ namespace inventory.Client
                     {
 
                         TriggerServerEvent("getInventory", Exports["core-ztzbx"].playerToken());
-                        await Delay(200);
+                        
                         InventoryNui();
                         Inventory.inventoryOpen = true;
 
                         Vector3 pedCoords = GetEntityCoords(PlayerPedId(), false);
 
-                        
-
+                    
                         int playerClone = ClonePed(
                         PlayerPedId(), 
                         0.0f, 
@@ -106,6 +105,15 @@ namespace inventory.Client
                         ClearFocus();
                         SetCamActive(cam_zoom, true);
                         RenderScriptCams(true, true, 1000, true, false);
+
+
+                        Inventory.temporalPlayerPed = playerClone;
+
+                        // 
+
+                        await Delay(500);
+
+
 
                     }
 
