@@ -110,7 +110,7 @@ namespace inventory.Client
                     newitem.Add("type", Inventory.ItemsMetaData[currentItemName][5]);
 
                     tempContent[littlePositionId-1] = newitem;
-
+                    
                     Inventory.currentItemsWeight = Inventory.currentItemsWeight + (float)((float)currentQuantity * (float)Int32.Parse(Inventory.ItemsMetaData[currentItemName][6]) / 1000.0f);
                 }
 
