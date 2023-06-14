@@ -13,7 +13,7 @@ namespace inventory.Server
 
         public Dictionary<string, List<string>> GetItemMeta()
         {
-            string query = $"SELECT name, image, descriptiontitle, description, unit FROM `itemsmetadata`";
+            string query = $"SELECT name, image, descriptiontitle, description, unit, `type`, `weight` FROM `itemsmetadata`";
             dynamic result = Exports["fivem-mysql"].raw(query);
 
             Dictionary<string, List<string>> meta = new Dictionary<string, List<string>>();

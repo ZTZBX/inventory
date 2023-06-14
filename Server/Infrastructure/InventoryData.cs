@@ -34,6 +34,17 @@ namespace inventory.Server
             Exports["fivem-mysql"].raw(changeQuantity);
         }
 
+        public int GetCurrentBackPackLevel(string token)
+        {
+            string usernameQuery = $"SELECT username from players where token='{token}'";
+            dynamic username = Exports["fivem-mysql"].raw(usernameQuery);
+
+            string query = $"select backpacklevel from inventoryconfig where username='{username[0][0]}'";
+            dynamic result = Exports["fivem-mysql"].raw(query);
+            
+            return Int32.Parse(result[0][0]);
+        }
+
         public int GetInventorySize(string token)
         {
             string query = $"select maxslots from inventoryconfig as pinv RIGHT join players as player on player.username = pinv.username where player.token ='{token}'";
@@ -114,6 +125,26 @@ namespace inventory.Server
             Exports["fivem-mysql"].raw(query);
         }
 
+        public void RemoveItemQuantityInInventory(string token, string itemname, int quantity)
+        {
+            if (!CheckItemIn(token, itemname)) { return; }
+            string query;
+            string usernameQuery = $"SELECT username from players where token='{token}'";
+            dynamic username = Exports["fivem-mysql"].raw(usernameQuery);
+            string getQuantity = $"SELECT quantity from `inventory` where `username` = '{username[0][0]}' and `name` = '{itemname}'";
+            dynamic dbQuantity = Exports["fivem-mysql"].raw(getQuantity);
+            int quantityResult = Int32.Parse(dbQuantity[0][0]) - quantity;
+            if (quantityResult == 0)
+            {
+                query = $"DELETE FROM `inventory` WHERE `inventory`.`username` = '{username[0][0]}' AND `inventory`.`name` = '{itemname}'";
+                Exports["fivem-mysql"].raw(query);
+                return;
+            }
+
+            query = $"UPDATE `inventory` SET `quantity` = '{quantityResult.ToString()}' WHERE `inventory`.`username` = '{username[0][0]}' AND `inventory`.`name` = '{itemname}'";
+            Exports["fivem-mysql"].raw(query);
+        }
+
         public void DeleteItemFromInventory(string token, string itemname)
         {
             if (!CheckItemIn(token, itemname)) { return; }
@@ -190,7 +221,7 @@ namespace inventory.Server
             string query = $"select name, quantity, slotposition from inventory as pinv RIGHT join players as player on player.username = pinv.username where player.token ='{token}'";
             dynamic result = Exports["fivem-mysql"].raw(query);
 
-            string itemData = $"select name, image, descriptiontitle, `description`, `type`, unit from itemsmetadata";
+            string itemData = $"select name, image, descriptiontitle, `description`, `type`, unit, `weight` from itemsmetadata";
             dynamic metaDataProd = Exports["fivem-mysql"].raw(itemData);
 
             if (result[0][0] != "")
@@ -210,6 +241,8 @@ namespace inventory.Server
                             r.Add("descriptiontitle", mT[2]);
                             r.Add("description", mT[3]);
                             r.Add("slotposition", line[2]);
+                            r.Add("type", mT[4]);
+                            r.Add("weight", mT[6]);
                             listResult.Add(r);
                             break;
                         }

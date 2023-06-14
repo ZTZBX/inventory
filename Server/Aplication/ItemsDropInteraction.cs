@@ -19,7 +19,7 @@ namespace inventory.Server
             EventHandlers["getCurrentBackPack"] += new Action<Player, int>(GetCurrentBackPack);
             EventHandlers["addItemsInInentoryFromGround"] += new Action<Player, string, int, string, int>(AddItemsInInentoryFromGround);
         }
-
+        
         private void GetCurrentBackPack([FromSource] Player user, int backpackId)
         {
             if (!ItemDrop.stackItemsGround.ContainsKey(backpackId)) { return; }
@@ -46,7 +46,7 @@ namespace inventory.Server
             // check if item exists in inventory
             bool inInventoryI = false;
 
-            foreach (var itemI in Items.inInventory)
+            foreach (var itemI in Items.inInventory[token])
             {
                 if (itemI["name"] == itemName)
                 {

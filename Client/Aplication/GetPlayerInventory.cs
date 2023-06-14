@@ -19,6 +19,9 @@ namespace inventory.Client
             RegisterNuiCallbackType("get_item_meta_data");
             EventHandlers["__cfx_nui:get_item_meta_data"] += new Action<IDictionary<string, object>, CallbackDelegate>(GetItemMetaData);
             EventHandlers["setInventory"] += new Action<string>(SetInventory);
+            EventHandlers["setCurrentBackPack"] += new Action<int>(SetCurrentBackPack);
+            EventHandlers["setCurrentItemsWeight"] += new Action<int>(SetCurrentItemsWeight);
+            
         }
 
         private void GetItemMetaData(IDictionary<string, object> data, CallbackDelegate cb)
@@ -36,9 +39,22 @@ namespace inventory.Client
 
         private void SetInventory(string inventory)
         {
-
             Inventory.content = inventory;
         }
+
+        private void SetCurrentBackPack(int size)
+        {
+            // transf grams to kg to diplay 
+            Inventory.currentBackPackSize = (float)((float)size / 1000.0f);
+        }
+
+        private void SetCurrentItemsWeight(int size)
+        {
+            // transf grams to kg to diplay 
+            Inventory.currentItemsWeight = (float)((float)size / 1000.0f);
+        }
+
+        
 
         private void GetInventory(IDictionary<string, object> data, CallbackDelegate cb)
         {

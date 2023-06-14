@@ -15,5 +15,9 @@ namespace inventory.Client
         static public int temporalPlayerPed = -1; 
 
         public static Dictionary<string, List<string>> ItemsMetaData = new Dictionary<string, List<string>>();
+
+        public static float currentBackPackSize = -1.0f;
+
+        public static float currentItemsWeight = -1.0f;
     }
 }

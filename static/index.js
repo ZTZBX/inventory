@@ -5,6 +5,14 @@ window.itemsOnGroundPreview = []
 window.itemsUpdatedOnGround = {}
 
 
+function makeElementInInventoryClean(id) {
+  $("#" + id).empty();
+  $("#" + id).attr("class", "item empty");
+  $("#" + id).css("background", "rgba(255, 255, 255, 0.4)");
+  $("#" + id).attr("id", "empty");
+}
+
+
 function generateClothes() {
   `
   <div class="item item-trade">
@@ -25,8 +33,15 @@ function generateClothes() {
     var slot;
     if (test[key] == null) {
       slot = `
-      <div class="item empty" id="`+ key + `Character" style="padding: 5px;">
+      <div class="item empty" id="`+ key + `Character" style="padding: 5px;" name="empty">
             <div class="charter_item `+ key + `"></div>
+      </div>
+      `
+    }
+    else {
+      slot = `
+      <div class="item item-trade" id="`+ key + `Character" name="` + test[key].replace(".png", "") + `">
+        <div class="item-img" ><img src="./`+ test[key] + `"></div>
       </div>
       `
     }
@@ -66,20 +81,36 @@ function generateClothes() {
         var typeOfCharacterChange = a.attr("id")
         var ItemToChange = b.attr("id")
 
-        console.log(typeOfCharacterChange);
-        console.log(ItemToChange);
+        if (b.attr("itemType").replace("clothing-", "") == typeOfCharacterChange.replace("Character", "")) {
+          if (a.attr("name") != "empty") {
+            // add this in inventory
+          }
 
-        fetch(`https://inventory/change_clothes`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json; charset=UTF-8',
-          }, body: JSON.stringify({
-            itemtype: typeOfCharacterChange,
-            itemname: ItemToChange
-          })
-        }).then()
-          .catch(err => {
-          });
+
+          a.empty()
+          a.append(`<div class="item-img" ><img src="./` + b.attr("customImageAttr") + `"></div>`)
+          a.attr("class", "item item-trade")
+          a.attr("name", b.attr("id"))
+
+
+          if (Number(b.attr("cuantity").replace(/\D/g, '')) == 1) {
+            makeElementInInventoryClean(b.attr("id"));
+          }
+
+
+          fetch(`https://inventory/change_clothes`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json; charset=UTF-8',
+            }, body: JSON.stringify({
+              itemtype: typeOfCharacterChange,
+              itemname: ItemToChange
+            })
+          }).then()
+            .catch(err => {
+            });
+        }
+
       }
     });
 
@@ -240,6 +271,7 @@ function generateItemsInGround(listOfItems) {
   var playerInventory = JSON.parse(listOfItems['data']);
   var list_of_slots = playerInventory
 
+  $("#itemsListGround").empty();
 
   for (let i = 0; i < list_of_slots.length; i++) {
     slot_name = list_of_slots[i]["name"]
@@ -284,6 +316,13 @@ function generateItemsInGround(listOfItems) {
     $(this).css('color', 'rgb(185, 185, 185)')
   });
 
+}
+
+function setWeight(data)
+{
+  var meta = JSON.parse(data["data"]);
+  $("#maxweightcarry").text(meta.max_weight);
+  $("#currentweightcarried").text(meta.curret_weight);
 }
 
 function generateItemInSlots(listOfItems) {
@@ -349,12 +388,13 @@ function generateItemInSlots(listOfItems) {
     if (list_of_slots[i]["name"] != "empty") {
       slot_name = list_of_slots[i]["name"]
       slot_image_name = list_of_slots[i]["image"]
+      item_type = list_of_slots[i]["type"]
       title_description = list_of_slots[i]["descriptiontitle"]
       description = list_of_slots[i]["description"]
       cuantity = list_of_slots[i]["quantity"] + " " + list_of_slots[i]["unit"]
 
       var slot = `
-      <div class="item item-trade" cuantity="`+ cuantity + `" id="` + list_of_slots[i]["name"] + `" name="` + list_of_slots[i]["slotposition"] + `" draggable='true'>
+      <div class="item item-trade" itemType="`+ item_type + `" customImageAttr="` + slot_image_name + `" cuantity="` + cuantity + `" id="` + list_of_slots[i]["name"] + `" name="` + list_of_slots[i]["slotposition"] + `" draggable='true'>
       <h5>`+ slot_name + `</h5>
       <div class="item-img"><img src="./`+ slot_image_name + `"></div>
       `
@@ -516,6 +556,15 @@ $(function () {
       window.itemsOnGroundPreview = [];
       window.itemsUpdatedOnGround = {};
 
+      fetch(`https://inventory/get_inventory_meta_weight`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: JSON.stringify({
+        })
+      }).then(resp => resp.json()).then(success => setWeight(success));
+
       fetch(`https://inventory/get_inventory`, {
         method: 'POST',
         headers: {
@@ -562,12 +611,6 @@ $(function () {
       .catch(err => {
       });
 
-
-    addElementOnGround(
-      item_name,
-      $("#rangevalDrop").val(),
-    )
-
     closeDropItemMenu();
     closeGetItemMenu();
 
@@ -588,11 +631,6 @@ $(function () {
 
     closeDropItemMenu();
     closeGetItemMenu();
-
-    addElemenFromGround(
-      $("#getQuantityName").attr("name"),
-      $("#rangevalGet").val(),
-    )
   });
 
   $("#exit").click(function () {
@@ -614,67 +652,3 @@ $(function () {
   });
 });
 
-
-function updateProductInGroundMeta(data) {
-  var vd = JSON.parse(data["data"]);
-
-  for (let i = 0; i < window.itemsOnGround.length; i++) {
-    if (window.itemsOnGround[i]["name"] == vd["name"]) {
-      window.itemsOnGround[i]["image"] = vd["image"],
-        window.itemsOnGround[i]["unit"] = vd["unit"]
-
-      // check if already this item is on ground 
-      if ($("#" + item_name + "_ground").length) {
-        if (window.itemsUpdatedOnGround["#" + item_name + "_ground"] === undefined) {
-          window.itemsOnGround[i]["quantity"] += Number($("#" + item_name + "_ground").attr("cuantity"))
-          window.itemsUpdatedOnGround["#" + item_name + "_ground"] = true
-        }
-
-      }
-    }
-  }
-
-  generateItemsInGround({ "data": JSON.stringify(window.itemsOnGround) })
-}
-
-
-function addElemenFromGround(item_name, quantity) {
-  $("#quantity_for_" + item_name).text(Number(Number($("#quantity_for_" + item_name).text().split(" ")[0]) + quantity) + " " + $("#quantity_for_" + item_name).text().split(" ")[1])
-}
-
-function addElementOnGround(item_name, quantity) {
-
-  if (quantity == 0) {
-    return;
-  }
-  // check if already exists on items
-  let line_finded = false;
-  for (let i = 0; i < window.itemsOnGround.length; i++) {
-    if (window.itemsOnGround[i]["name"] == item_name) {
-      window.itemsOnGround[i]["quantity"] += Number(quantity)
-      line_finded = true;
-    }
-  }
-
-  // updating the quantity of the inventory
-  $("#quantity_for_" + item_name).text(Number(Number($("#quantity_for_" + item_name).text().split(" ")[0]) - quantity) + " " + $("#quantity_for_" + item_name).text().split(" ")[1])
-
-  if (Number($("#quantity_for_" + item_name).text().split(" ")[0]) == 0) {
-    $("#" + item_name).remove()
-  }
-
-  fetch(`https://inventory/get_item_meta_data`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json; charset=UTF-8',
-    },
-    body: JSON.stringify({
-      item: item_name
-    })
-  }).then(resp => resp.json()).then(success => updateProductInGroundMeta(success));
-
-  if (!line_finded) {
-    window.itemsOnGround.push({ "name": item_name, "quantity": Number(quantity) })
-  }
-
-}

@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using CitizenFX.Core;
 using static CitizenFX.Core.Native.API;
+using Newtonsoft.Json;
 
 namespace inventory.Client
 {
@@ -29,9 +30,42 @@ namespace inventory.Client
             if (currentitemType == "shoesCharacter")
             {
                 Exports["player"].updateShoes(currentitemName, Inventory.temporalPlayerPed);
+
+                List<Dictionary<string, string>> tempContent = JsonConvert.DeserializeObject<List<Dictionary<string, string>>>(Inventory.content);
+
+                for (int i = 0; i < tempContent.Count; i++)
+                {
+                    if (tempContent[i]["name"] == currentitemName)
+                    {
+                        if (Int32.Parse(tempContent[i]["quantity"]) == 1)
+                        {
+                            tempContent.RemoveAt(i);
+                        }
+                        else
+                        {
+                            tempContent[i]["quantity"] = (Int32.Parse(tempContent[i]["quantity"]) - 1).ToString();
+                        }
+                        break;
+                    }
+                }
+
+                Inventory.content = JsonConvert.SerializeObject(tempContent);
+
+                TriggerServerEvent("removeItemInventoryS", Exports["core-ztzbx"].playerToken(), currentitemName, 1);
             }
 
+
             cb(new { data = "ok" });
+
+            string jsonString = "{\"showIn\": false }";
+            SetNuiFocus(false, false);
+            SendNuiMessage(jsonString);
+            Inventory.inventoryOpen = false;
+
+            cb(new { data = "ok" });
+
+            ClientMain.InventoryNui(false);
+            Inventory.inventoryOpen = true;
         }
 
     }

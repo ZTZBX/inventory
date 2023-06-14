@@ -3,16 +3,16 @@ using CitizenFX.Core;
 
 namespace inventory.Server
 {
-    public class AddItemInventory : BaseScript
+    public class RemoveItemInInvetory : BaseScript
     {
         InventoryData invData = new InventoryData();
 
-        public AddItemInventory()
+        public RemoveItemInInvetory()
         {
-            EventHandlers["addItemInventoryS"] += new Action<Player, string, string, int>(AddItemInventoryI);
+            EventHandlers["removeItemInventoryS"] += new Action<Player, string, string, int>(RemoveItemInInvetoryI);
         }
 
-        private void AddItemInventoryI([FromSource] Player user, string token, string item, int quantity)
+        private void RemoveItemInInvetoryI([FromSource] Player user, string token, string item, int quantity)
         {
             // check if item exists in inventory
             bool inInventoryI = false;
@@ -28,16 +28,12 @@ namespace inventory.Server
 
             if (inInventoryI)
             {
-                invData.AddItemQuantityInInventory(token, item, quantity);
+                invData.RemoveItemQuantityInInventory(token, item, quantity);
+                TriggerClientEvent(user, "updateInventory");
                 return;
             }
 
-
             
-            invData.AddItemToInventory(token, Items.data[item][0], quantity);
-    
-
-            TriggerClientEvent(user, "updateInventory");
         }
 
     }

@@ -47,8 +47,36 @@ namespace inventory.Client
             }
         }
 
-        static public void InventoryNui()
+        static public void InventoryNui(bool createNewPreviewPed)
         {
+
+            if (createNewPreviewPed)
+            {
+                Vector3 pedCoords = GetEntityCoords(PlayerPedId(), false);
+                int playerClone = ClonePed(
+                PlayerPedId(),
+                0.0f,
+                false,
+                false
+                );
+                SetEntityCoords(playerClone, pedCoords.X - 2.0f, pedCoords.Y, pedCoords.Z + 3.0f, false, false, false, false);
+
+                FreezeEntityPosition(playerClone, true);
+                SetEntityInvincible(playerClone, true);
+
+                SetEntityHeading(playerClone, 180.0f);
+
+
+                Vector3 pedClone = GetEntityCoords(playerClone, false);
+
+                int cam_zoom = CreateCamWithParams("DEFAULT_SCRIPTED_CAMERA", pedClone.X - 1.0f, pedClone.Y - 3.0f, pedClone.Z, 0, 0, 0, GetGameplayCamFov(), true, 0);
+                ClearFocus();
+                SetCamActive(cam_zoom, true);
+                RenderScriptCams(true, true, 1000, true, false);
+                Inventory.temporalPlayerPed = playerClone;
+            }
+
+
             string jsonString = "{\"showIn\": true }";
             SetNuiFocus(true, true);
             SendNuiMessage(jsonString);
@@ -71,50 +99,25 @@ namespace inventory.Client
             {
                 await Delay(0);
                 if (!Inventory.playerHasToken) { continue; }
+
+                while (Inventory.currentBackPackSize == -1.0f){
+                    TriggerServerEvent("getCurrentBackPackMaxSize", Exports["core-ztzbx"].playerToken());
+                    await Delay(0);
+                }
+                
+                while (Inventory.currentItemsWeight == -1.0f){
+                    await Delay(0);
+                }
+
                 // G Key
                 if (IsControlJustReleased(0, 47))
                 {
                     if (!Inventory.inventoryOpen)
                     {
-
                         TriggerServerEvent("getInventory", Exports["core-ztzbx"].playerToken());
-                        
-                        InventoryNui();
+                        TriggerServerEvent("getCurrentBackPackMaxSize", Exports["core-ztzbx"].playerToken());
+                        InventoryNui(true);
                         Inventory.inventoryOpen = true;
-
-                        Vector3 pedCoords = GetEntityCoords(PlayerPedId(), false);
-
-                    
-                        int playerClone = ClonePed(
-                        PlayerPedId(), 
-                        0.0f, 
-                        false, 
-                        false
-                        );
-                        SetEntityCoords(playerClone, pedCoords.X-2.0f, pedCoords.Y, pedCoords.Z + 3.0f, false, false, false, false);
-
-                        FreezeEntityPosition(playerClone, true);
-                        SetEntityInvincible(playerClone, true);
-
-                        SetEntityHeading(playerClone, 180.0f);
-
-
-                        Vector3 pedClone = GetEntityCoords(playerClone, false);
-
-                        int cam_zoom = CreateCamWithParams("DEFAULT_SCRIPTED_CAMERA", pedClone.X - 1.0f, pedClone.Y - 3.0f, pedClone.Z, 0, 0, 0, GetGameplayCamFov(), true, 0);
-                        ClearFocus();
-                        SetCamActive(cam_zoom, true);
-                        RenderScriptCams(true, true, 1000, true, false);
-
-
-                        Inventory.temporalPlayerPed = playerClone;
-
-                        // 
-
-                        await Delay(500);
-
-
-
                     }
 
                 }

@@ -8,6 +8,7 @@ CREATE TABLE itemsmetadata (
     descriptiontitle varchar(100) NOT NULL,
     `description` varchar(255) NOT NULL,
     `type` varchar(255) NOT NULL, -- this is to indicate if is a consumible, money or clothing
+    `weight` int NOT NULL DEFAULT 1,
     unit varchar(10) NOT NULL,
     PRIMARY KEY(`name`)
 )ENGINE=InnoDB;
@@ -25,8 +26,10 @@ CREATE TABLE inventory (
 )ENGINE=InnoDB;
 
 
+
 CREATE TABLE inventoryconfig (
     username varchar(50) NOT NULL,
-    maxslots int NOT NULL DEFAULT 6,
+    maxslots int NOT NULL DEFAULT 12,
+    backpacklevel int NOT NULL DEFAULT 0,
     FOREIGN KEY (username) REFERENCES players(username)
 )ENGINE=InnoDB;

@@ -53,7 +53,7 @@ namespace inventory.Server
                         );
 
                         if (onZone)
-                        {   
+                        {
                             newBackPack = false;
 
                             if (ItemDrop.stackItemsGround[backpackOnGround.Key].Count > 0)
@@ -108,14 +108,23 @@ namespace inventory.Server
         private void ChangeItemPosition([FromSource] Player user, string token, string itemname, string position)
         {
             invData.ChangeItemPosition(token, itemname, position);
+
         }
 
         private void GetInventory([FromSource] Player user, string token)
         {
             bool itemInSlot;
-            List<Dictionary<string, string>> result = new List<Dictionary<string, string>>();
             int inventorySize = invData.GetInventorySize(token);
             List<Dictionary<string, string>> currentInventory = invData.GetItemsMetadata(token);
+            List<Dictionary<string, string>> list = new List<Dictionary<string, string>>();
+
+            if (Items.inInventory.ContainsKey(token))
+            {
+                Items.inInventory.Remove(token);
+            }
+
+            Items.inInventory.Add(token, list);
+
 
             if (currentInventory.Count > 0)
             {
@@ -126,7 +135,7 @@ namespace inventory.Server
                     {
                         if (Int32.Parse(item["slotposition"]) == i)
                         {
-                            result.Add(item);
+                            Items.inInventory[token].Add(item);
                             itemInSlot = true;
                             break;
                         }
@@ -136,7 +145,7 @@ namespace inventory.Server
                     Dictionary<string, string> sub_result = new Dictionary<string, string>();
                     sub_result.Add("name", "empty");
                     sub_result.Add("slotposition", i.ToString());
-                    result.Add(sub_result);
+                    Items.inInventory[token].Add(sub_result);
 
                 }
             }
@@ -147,13 +156,11 @@ namespace inventory.Server
                     Dictionary<string, string> sub_result = new Dictionary<string, string>();
                     sub_result.Add("name", "empty");
                     sub_result.Add("slotposition", i.ToString());
-                    result.Add(sub_result);
+                    Items.inInventory[token].Add(sub_result);
                 }
             }
 
-
-            Items.inInventory = result;
-            TriggerClientEvent(user, "setInventory", JsonConvert.SerializeObject(result));
+            TriggerClientEvent(user, "setInventory", JsonConvert.SerializeObject(Items.inInventory[token]));
 
         }
 

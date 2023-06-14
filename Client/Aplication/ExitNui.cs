@@ -24,6 +24,14 @@ namespace inventory.Client
             cb(new{data = "ok"});
 
             DisplayRadar(true);
+
+            DeletePed(ref Inventory.temporalPlayerPed);
+
+            ClearFocus();
+            RenderScriptCams(false, false, 0, true, false);
+
+            TriggerServerEvent("getCurrentBackPackMaxSize", Exports["core-ztzbx"].playerToken());
+            
         }
 
     }

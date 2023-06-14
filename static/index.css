@@ -375,7 +375,7 @@ h4 {
   position: absolute;
   bottom: 15px;
   width: 98px;
-  left: 10px;
+  left: 1px;
 }
 
 .item-grid-drop-items .item .item-img {
@@ -392,7 +392,7 @@ h4 {
 }
 
 .item-on-character .item .item-img img {
-  width: 64px;
+  width: 82px;
   display: block;
 }
 
@@ -414,12 +414,14 @@ h4 {
 }
 
 .item-grid .item h5 {
-  font-weight: 600;
+  font-size: medium;
+  font-weight: 350;
   text-align: center;
 }
 
 .item-grid-drop-items .item h5 {
-  font-weight: 600;
+  font-size: medium;
+  font-weight: 450;
   text-align: center;
 }
 
@@ -543,7 +545,7 @@ h4 {
 }
 
 #exit:hover {
-  fill: #1f2029;
+  fill: red;
 }
 
 
@@ -572,9 +574,9 @@ h4 {
   left: 40%;
   z-index: 100;
   background-color: rgba(27, 27, 27, 0.5);
-  width: 260px;
-  height: 125px;
-  padding: 10px;
+  width: 300px;
+  height: 155px;
+  padding: 130px;
   overflow: hidden;
   border-radius: 0.25em;
   color: rgb(185, 185, 185);
@@ -588,8 +590,8 @@ h4 {
   left: 40%;
   z-index: 100;
   background-color: rgba(27, 27, 27, 0.5);
-  width: 260px;
-  height: 125px;
+  width: 300px;
+  height: 130px;
   padding: 10px;
   overflow: hidden;
   border-radius: 0.25em;

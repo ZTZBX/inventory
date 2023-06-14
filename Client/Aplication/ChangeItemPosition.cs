@@ -27,8 +27,10 @@ namespace inventory.Client
             string currentPosition = position.ToString();
 
             TriggerServerEvent("changeItemPosition", Exports["core-ztzbx"].playerToken(), currentItemName, currentPosition);
+            TriggerServerEvent("getInventory", Exports["core-ztzbx"].playerToken());
 
             cb(new{data = "ok"});
+            
         }
 
     }
