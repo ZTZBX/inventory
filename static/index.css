@@ -369,6 +369,7 @@ h4 {
   position: absolute;
   bottom: 5px;
   width: 98px;
+  max-height: 75px;
 }
 
 .item-on-character .item .item-img {
