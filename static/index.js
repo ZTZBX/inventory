@@ -3,7 +3,7 @@ window.itemStak;
 window.itemsOnGround = []
 window.itemsOnGroundPreview = []
 window.itemsUpdatedOnGround = {}
-
+window.itemsoncharacter = {}
 
 function makeElementInInventoryClean(id) {
   $("#" + id).empty();
@@ -13,35 +13,29 @@ function makeElementInInventoryClean(id) {
 }
 
 
-function generateClothes() {
-  `
-  <div class="item item-trade">
-  <div class="item-img" id="headCharacter" ><img src="./money.png"></div>
-  </div>
-  `
-
-  let test = {
-    "head": null,
-    "body": null,
-    "gloves": null,
-    "pants": null,
-    "shoes": null,
-    "backpack": null
+function generateClothes(shoes) {
+  window.itemsoncharacter = {
+    "headCharacter": null,
+    "bodyCharacter": null,
+    "glovesCharacter": null,
+    "pantsCharacter": null,
+    "shoesCharacter": shoes,
+    "backpackCharacter": null
   }
 
-  for (let key in test) {
+  for (let key in window.itemsoncharacter) {
     var slot;
-    if (test[key] == null) {
+    if (window.itemsoncharacter[key] == null) {
       slot = `
-      <div class="item empty" id="`+ key + `Character" style="padding: 5px;" name="empty">
+      <div class="item empty" id="`+ key + `" style="padding: 5px;" name="empty">
             <div class="charter_item `+ key + `"></div>
       </div>
       `
     }
     else {
       slot = `
-      <div class="item item-trade" id="`+ key + `Character" name="` + test[key].replace(".png", "") + `">
-        <div class="item-img" ><img src="./`+ test[key] + `"></div>
+      <div class="item item-trade" id="`+ key +`" name="`+window.itemsoncharacter[key]+`">
+        <div class="item-img" ><img src="./`+ window.itemsoncharacter[key] + `.png"></div>
       </div>
       `
     }
@@ -81,6 +75,11 @@ function generateClothes() {
         var typeOfCharacterChange = a.attr("id")
         var ItemToChange = b.attr("id")
 
+        if (window.itemsoncharacter[typeOfCharacterChange] == ItemToChange)
+        {
+          return;
+        }
+
         if (b.attr("itemType").replace("clothing-", "") == typeOfCharacterChange.replace("Character", "")) {
           if (a.attr("name") != "empty") {
             // add this in inventory
@@ -98,6 +97,8 @@ function generateClothes() {
           }
 
 
+
+
           fetch(`https://inventory/change_clothes`, {
             method: 'POST',
             headers: {
@@ -113,9 +114,6 @@ function generateClothes() {
 
       }
     });
-
-
-
 }
 
 function changeInputValueDrop() {
@@ -517,6 +515,15 @@ function generateItemInSlots(listOfItems) {
   openItemHandler()
 }
 
+function setPlayerItemsOnCharacter(data){
+  var clothes = JSON.parse(data["data"]);
+  if (clothes.shoes == "no-shoes")
+  {
+    clothes.shoes = null;
+  }
+
+  generateClothes(clothes.shoes);
+}
 
 $(function () {
   var dragElement = null;
@@ -583,7 +590,17 @@ $(function () {
         })
       }).then(resp => resp.json()).then(success => generateItemsInGround(success));
 
-      generateClothes();
+      
+      fetch(`https://inventory/get_player_items_on_character`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: JSON.stringify({
+        })
+      }).then(resp => resp.json()).then(success => setPlayerItemsOnCharacter(success));
+
+      
 
       document.getElementsByClassName("mainApp")[0].style.display = 'block';
 

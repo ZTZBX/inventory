@@ -18,6 +18,9 @@ body {
   width: 100%;
   height: 100%;
   overflow: hidden;
+  -webkit-user-select: none; /* Safari */
+  -ms-user-select: none; /* IE 10 and IE 11 */
+  user-select: none; /* Standard syntax */
 }
 
 body {
@@ -662,22 +665,22 @@ h4 {
   margin-left: 3px;
 }
 
-.head {
+.headCharacter {
   background-image: url("./cap.png");
 }
 
-.body {
+.bodyCharacter {
   background-image: url("./tshirt.png");
 }
-.gloves {
+.glovesCharacter {
   background-image: url("./rubber-gloves.png");
 }
-.pants {
+.pantsCharacter {
   background-image: url("./trousers.png");
 }
-.shoes {
+.shoesCharacter {
   background-image: url("./sneakers.png");
 }
-.backpack {
+.backpackCharacter {
   background-image: url("./backpack.png");
 }

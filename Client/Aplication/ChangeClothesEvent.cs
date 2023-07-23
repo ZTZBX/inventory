@@ -29,7 +29,7 @@ namespace inventory.Client
 
             if (currentitemType == "shoesCharacter")
             {
-                Exports["player"].updateShoes(currentitemName, Inventory.temporalPlayerPed);
+                Exports["player"].updateShoes(currentitemName, Inventory.temporalPlayerPed, Exports["core-ztzbx"].playerToken());
 
                 List<Dictionary<string, string>> tempContent = JsonConvert.DeserializeObject<List<Dictionary<string, string>>>(Inventory.content);
 
