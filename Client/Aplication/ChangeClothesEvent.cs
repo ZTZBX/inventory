@@ -29,9 +29,58 @@ namespace inventory.Client
 
             if (currentitemType == "shoesCharacter")
             {
-                Exports["player"].updateShoes(currentitemName, Inventory.temporalPlayerPed, Exports["core-ztzbx"].playerToken());
 
                 List<Dictionary<string, string>> tempContent = JsonConvert.DeserializeObject<List<Dictionary<string, string>>>(Inventory.content);
+
+                // replace the item in the inventory
+
+                // check if are already shoes 
+                string current_item_to_add_in_inventory = Exports["player"].getShoes(); // first position existing
+
+                // adding item in inventory
+                if (current_item_to_add_in_inventory != "no-shoes")
+                {
+                    
+                    TriggerServerEvent("addItemInventoryS", Exports["core-ztzbx"].playerToken(), current_item_to_add_in_inventory, 1);
+                    TriggerServerEvent("getCurrentBackPackMaxSize", Exports["core-ztzbx"].playerToken());
+
+                    bool item_exists = false;
+
+                    for (int i = 0; i < tempContent.Count; i++)
+                    {
+                        if (tempContent[i]["name"] == current_item_to_add_in_inventory)
+                        {
+                            tempContent[i]["quantity"] = (Int32.Parse(tempContent[i]["quantity"]) + 1).ToString();
+                            item_exists = true;
+                            break;
+                        }
+                    }
+
+                    
+                    //  adding new item in inventory
+
+                    if (!item_exists)
+                    {
+                         for (int i = 0; i < tempContent.Count; i++)
+                        {
+                            if (tempContent[i]["name"] == "empty")
+                            {
+                                Dictionary<string, string> newitem = new Dictionary<string, string>();
+                                tempContent[i]["name"] = current_item_to_add_in_inventory;
+                                tempContent[i].Add("quantity", "1");
+                                tempContent[i].Add("unit", Inventory.ItemsMetaData[current_item_to_add_in_inventory][1]);
+                                tempContent[i].Add("image", Inventory.ItemsMetaData[current_item_to_add_in_inventory][1]);
+                                tempContent[i].Add("descriptiontitle", Inventory.ItemsMetaData[current_item_to_add_in_inventory][2]);
+                                tempContent[i].Add("description", Inventory.ItemsMetaData[current_item_to_add_in_inventory][3]);
+                                tempContent[i].Add("type", Inventory.ItemsMetaData[current_item_to_add_in_inventory][5]);
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                Exports["player"].updateShoes(currentitemName, Inventory.temporalPlayerPed, Exports["core-ztzbx"].playerToken());
+                // removing the item from the inventory
 
                 for (int i = 0; i < tempContent.Count; i++)
                 {

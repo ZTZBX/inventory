@@ -116,6 +116,7 @@ namespace inventory.Client
                     {
                         TriggerServerEvent("getInventory", Exports["core-ztzbx"].playerToken());
                         TriggerServerEvent("getCurrentBackPackMaxSize", Exports["core-ztzbx"].playerToken());
+                        
                         InventoryNui(true);
                         Inventory.inventoryOpen = true;
                     }
