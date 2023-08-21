@@ -77,6 +77,10 @@ namespace inventory.Client
                             }
                         }
                     }
+
+                    Inventory.currentItemsWeight = Inventory.currentItemsWeight + (float)((float)Int32.Parse(Inventory.ItemsMetaData[current_item_to_add_in_inventory][6]) / 1000.0f);
+
+                    
                 }
 
                 Exports["player"].updateShoes(currentitemName, Inventory.temporalPlayerPed, Exports["core-ztzbx"].playerToken());
@@ -100,6 +104,7 @@ namespace inventory.Client
 
                 Inventory.content = JsonConvert.SerializeObject(tempContent);
 
+                Inventory.currentItemsWeight = Inventory.currentItemsWeight - (float)((float)Int32.Parse(Inventory.ItemsMetaData[currentitemName][6]) / 1000.0f);
                 TriggerServerEvent("removeItemInventoryS", Exports["core-ztzbx"].playerToken(), currentitemName, 1);
             }
 

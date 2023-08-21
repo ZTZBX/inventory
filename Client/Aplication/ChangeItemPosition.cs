@@ -33,6 +33,7 @@ namespace inventory.Client
             {
 
                 string shoes = Exports["player"].getShoes();
+                Inventory.currentItemsWeight = Inventory.currentItemsWeight + (float)((float)Int32.Parse(Inventory.ItemsMetaData[shoes][6]) / 1000.0f);
                 Exports["player"].updateShoes("no-shoes", Inventory.temporalPlayerPed, Exports["core-ztzbx"].playerToken());
                 List<Dictionary<string, string>> tempContent = JsonConvert.DeserializeObject<List<Dictionary<string, string>>>(Inventory.content);
 
@@ -70,7 +71,6 @@ namespace inventory.Client
                         }
                     }
                 }
-
                 Inventory.content = JsonConvert.SerializeObject(tempContent);
 
                 cb(new { data = "ok" });
