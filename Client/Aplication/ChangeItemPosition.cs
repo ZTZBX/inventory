@@ -27,8 +27,6 @@ namespace inventory.Client
             string currentItemName = itemName.ToString();
             string currentPosition = position.ToString();
 
-            Debug.WriteLine(itemName.ToString());
-
             if (itemName.ToString() == "shoesCharacter")
             {
 

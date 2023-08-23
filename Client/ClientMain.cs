@@ -59,7 +59,7 @@ namespace inventory.Client
                 false,
                 false
                 );
-                SetEntityCoords(playerClone, pedCoords.X - 2.0f, pedCoords.Y, pedCoords.Z + 3.0f, false, false, false, false);
+                SetEntityCoords(playerClone, pedCoords.X - 2.0f, pedCoords.Y, pedCoords.Z + 1000.0f, false, false, false, false);
 
                 FreezeEntityPosition(playerClone, true);
                 SetEntityInvincible(playerClone, true);

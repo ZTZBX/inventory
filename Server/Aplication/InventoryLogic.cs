@@ -97,6 +97,8 @@ namespace inventory.Server
 
                     ItemDrop.stackItemsGround.Add(id_ob, currentItemOnGround);
                     ItemDrop.backpackLocations.Add(id_ob, new List<float> { playerCoords.X, playerCoords.Y, playerCoords.Z - 1.0f });
+
+                    FreezeEntityPosition(id_ob, true);
                 }
 
             }
