@@ -31,13 +31,13 @@ namespace inventory.Client
             RequestAnimSet("MOVE_M@DRUNK@VERYDRUNK");
             while (!HasAnimSetLoaded("MOVE_M@DRUNK@VERYDRUNK"))
             {
-                await Delay(1);
+                await Delay(100);
             }
 
             while (true)
             {
-                await Delay(0);
-                if (!Inventory.playerHasToken) { continue; }
+                await Delay(1000);
+                if (!Inventory.playerhaslogged) { continue; }
 
                 if (Inventory.currentItemsWeight > Inventory.currentBackPackSize)
                 {

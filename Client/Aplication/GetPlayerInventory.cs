@@ -40,18 +40,21 @@ namespace inventory.Client
         private void SetInventory(string inventory)
         {
             Inventory.content = inventory;
+            Inventory.inventoryLoaded = true;
         }
 
         private void SetCurrentBackPack(int size)
         {
             // transf grams to kg to diplay 
             Inventory.currentBackPackSize = (float)((float)size / 1000.0f);
+            Inventory.currentBackPackSizeLoaded = true;
         }
 
         private void SetCurrentItemsWeight(int size)
         {
             // transf grams to kg to diplay 
             Inventory.currentItemsWeight = (float)((float)size / 1000.0f);
+            Inventory.setCurrentItemsWeightLoaded = true;
         }
 
         
@@ -59,7 +62,7 @@ namespace inventory.Client
         private void GetInventory(IDictionary<string, object> data, CallbackDelegate cb)
         {
 
-            if (Inventory.playerHasToken)
+            if (Inventory.playerhaslogged)
             {
                 cb(new
                 {

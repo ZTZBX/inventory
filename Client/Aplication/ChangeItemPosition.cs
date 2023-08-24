@@ -32,12 +32,12 @@ namespace inventory.Client
 
                 string shoes = Exports["player"].getShoes();
                 Inventory.currentItemsWeight = Inventory.currentItemsWeight + (float)((float)Int32.Parse(Inventory.ItemsMetaData[shoes][6]) / 1000.0f);
-                Exports["player"].updateShoes("no-shoes", Inventory.temporalPlayerPed, Exports["core-ztzbx"].playerToken());
+                Exports["player"].updateShoes("no-shoes", Inventory.temporalPlayerPed, Inventory.currentToken);
                 List<Dictionary<string, string>> tempContent = JsonConvert.DeserializeObject<List<Dictionary<string, string>>>(Inventory.content);
 
                 // now lets add the item in the inventory
-                TriggerServerEvent("addItemInventoryS", Exports["core-ztzbx"].playerToken(), shoes, 1);
-                TriggerServerEvent("getCurrentBackPackMaxSize", Exports["core-ztzbx"].playerToken());
+                TriggerServerEvent("addItemInventoryS", Inventory.currentToken, shoes, 1);
+                TriggerServerEvent("getCurrentBackPackMaxSize", Inventory.currentToken);
 
                 bool item_exists = false;
 
@@ -85,8 +85,8 @@ namespace inventory.Client
             }
             else
             {
-                TriggerServerEvent("changeItemPosition", Exports["core-ztzbx"].playerToken(), currentItemName, currentPosition);
-                TriggerServerEvent("getInventory", Exports["core-ztzbx"].playerToken());
+                TriggerServerEvent("changeItemPosition", Inventory.currentToken, currentItemName, currentPosition);
+                TriggerServerEvent("getInventory", Inventory.currentToken);
                 cb(new { data = "ok" });
 
             }

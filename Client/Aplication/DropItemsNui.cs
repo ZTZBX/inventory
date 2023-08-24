@@ -28,13 +28,13 @@ namespace inventory.Client
             string currentItemName = item.ToString();
             string currentQuantity = quantity.ToString();
 
-            TriggerServerEvent("dropItems", Exports["core-ztzbx"].playerToken(), currentItemName, currentQuantity, Exports["core-ztzbx"].playerUsername());
+            TriggerServerEvent("dropItems", Inventory.currentToken, currentItemName, currentQuantity, Exports["core-ztzbx"].playerUsername());
 
             cb(new { data = "ok" });
 
 
             TriggerServerEvent("getCurrentBackPack", ItemsDroped.CurrectBackPackIdObject);
-            TriggerServerEvent("getInventory", Exports["core-ztzbx"].playerToken());
+            TriggerServerEvent("getInventory", Inventory.currentToken);
 
             if (ItemsDroped.CurrentBackPack.ContainsKey(currentItemName))
             {

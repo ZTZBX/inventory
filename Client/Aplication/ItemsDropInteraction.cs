@@ -60,9 +60,11 @@ namespace inventory.Client
 
             while (true)
             {
-                await Delay(500);
-                if (!Inventory.playerHasToken) { continue; }
+                await Delay(1000);
+                if (!Inventory.playerhaslogged) { continue; }
                 TriggerServerEvent("getItemsDropOnGround");
+
+                while (!Inventory.getItemsDropOnGroundLoaded) {await Delay(0);}
 
                 if (ItemsDroped.dropedItems.Count > 0)
                 {
@@ -80,6 +82,7 @@ namespace inventory.Client
                         ))
                         {
                             TriggerServerEvent("getCurrentBackPack", backpacks.Key);
+                            while (!Inventory.getCurrentBackPackLoaded) {await Delay(0);}
                             ItemsDroped.CurrectBackPackIdObject = backpacks.Key;
                         }
                         else
@@ -97,6 +100,9 @@ namespace inventory.Client
                     ItemsDroped.CurrectBackPackIdObject = -1;
                 }
 
+                Inventory.getItemsDropOnGroundLoaded = false;
+                Inventory.getCurrentBackPackLoaded = false;
+
             }
 
         }
@@ -106,6 +112,7 @@ namespace inventory.Client
             if (items != null && items.Length > 0)
             {
                 ItemsDroped.dropedItems = JsonConvert.DeserializeObject<Dictionary<int, List<float>>>(items);
+                Inventory.getItemsDropOnGroundLoaded = true;
             }
         }
 
@@ -114,6 +121,7 @@ namespace inventory.Client
             if (backpack != null && backpack.Length > 0)
             {
                 ItemsDroped.CurrentBackPack = JsonConvert.DeserializeObject<Dictionary<string, int>>(backpack);
+                Inventory.getCurrentBackPackLoaded = true;
             }
         }
 

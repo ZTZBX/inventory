@@ -49,7 +49,7 @@ namespace inventory.Client
             {
 
                 TriggerServerEvent("addItemsInInentoryFromGround",
-                    Exports["core-ztzbx"].playerToken(),
+                    Inventory.currentToken,
                     ItemsDroped.CurrectBackPackIdObject,
                     currentItemName,
                     currentQuantity

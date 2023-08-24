@@ -30,7 +30,7 @@ namespace inventory.Client
             ClearFocus();
             RenderScriptCams(false, false, 0, true, false);
 
-            TriggerServerEvent("getCurrentBackPackMaxSize", Exports["core-ztzbx"].playerToken());
+            TriggerServerEvent("getCurrentBackPackMaxSize", Inventory.currentToken);
             
         }
 

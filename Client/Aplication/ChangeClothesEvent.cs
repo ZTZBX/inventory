@@ -41,8 +41,8 @@ namespace inventory.Client
                 if (current_item_to_add_in_inventory != "no-shoes")
                 {
                     
-                    TriggerServerEvent("addItemInventoryS", Exports["core-ztzbx"].playerToken(), current_item_to_add_in_inventory, 1);
-                    TriggerServerEvent("getCurrentBackPackMaxSize", Exports["core-ztzbx"].playerToken());
+                    TriggerServerEvent("addItemInventoryS", Inventory.currentToken, current_item_to_add_in_inventory, 1);
+                    TriggerServerEvent("getCurrentBackPackMaxSize", Inventory.currentToken);
 
                     bool item_exists = false;
 
@@ -83,7 +83,7 @@ namespace inventory.Client
                     
                 }
 
-                Exports["player"].updateShoes(currentitemName, Inventory.temporalPlayerPed, Exports["core-ztzbx"].playerToken());
+                Exports["player"].updateShoes(currentitemName, Inventory.temporalPlayerPed, Inventory.currentToken);
                 // removing the item from the inventory
 
                 for (int i = 0; i < tempContent.Count; i++)
@@ -105,7 +105,7 @@ namespace inventory.Client
                 Inventory.content = JsonConvert.SerializeObject(tempContent);
 
                 Inventory.currentItemsWeight = Inventory.currentItemsWeight - (float)((float)Int32.Parse(Inventory.ItemsMetaData[currentitemName][6]) / 1000.0f);
-                TriggerServerEvent("removeItemInventoryS", Exports["core-ztzbx"].playerToken(), currentitemName, 1);
+                TriggerServerEvent("removeItemInventoryS", Inventory.currentToken, currentitemName, 1);
             }
 
 

@@ -8,7 +8,17 @@ namespace inventory.Client
 {
     static public class Inventory
     {
-        static public bool playerHasToken = false;
+
+        static public string currentToken;
+
+        static public bool inventoryLoaded = false;
+        static public bool currentBackPackSizeLoaded = false; 
+        static public bool setCurrentItemsWeightLoaded = false;
+
+        static public bool getCurrentBackPackLoaded = false;
+        static public bool getItemsDropOnGroundLoaded = false;
+
+        static public bool playerhaslogged = false;
         static public bool inventoryOpen = false;
         static public string content;
 

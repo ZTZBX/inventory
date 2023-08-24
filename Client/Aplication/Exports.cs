@@ -19,8 +19,8 @@ namespace inventory.Client
 
         private void AddItemInventory(string item, int quantity)
         {
-            TriggerServerEvent("addItemInventoryS", Exports["core-ztzbx"].playerToken(), item, quantity);
-            TriggerServerEvent("getCurrentBackPackMaxSize", Exports["core-ztzbx"].playerToken());
+            TriggerServerEvent("addItemInventoryS", Inventory.currentToken, item, quantity);
+            TriggerServerEvent("getCurrentBackPackMaxSize", Inventory.currentToken);
         }
 
 
