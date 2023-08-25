@@ -21,8 +21,6 @@ namespace inventory.Client
             SendNuiMessage(jsonString);
             Inventory.inventoryOpen = false;
 
-            cb(new{data = "ok"});
-
             DisplayRadar(true);
 
             DeletePed(ref Inventory.temporalPlayerPed);
@@ -31,6 +29,8 @@ namespace inventory.Client
             RenderScriptCams(false, false, 0, true, false);
 
             TriggerServerEvent("getCurrentBackPackMaxSize", Inventory.currentToken);
+
+            cb(new{data = "ok"});
             
         }
 

@@ -119,7 +119,9 @@ namespace inventory.Client
                 string jsonString = "{\"showIn\": false }";
                 SetNuiFocus(false, false);
                 SendNuiMessage(jsonString);
-                Inventory.inventoryOpen = true;
+                Inventory.inventoryOpen = false;
+
+                cb(new { data = "ok" });
 
                 ClientMain.InventoryNui(false);
                 Inventory.inventoryOpen = true;
