@@ -324,57 +324,6 @@ function setWeight(data)
 }
 
 function generateItemInSlots(listOfItems) {
-  //
-  //     ITEM SLOT EXAMPLE OF CODE
-  // <div class="item item-trade">
-  //        <h5>Money</h5>
-  //        <div class="item-img"><img src="./money.png"></div>
-  //  </div>
-  //
-
-  //
-  // Panel Example
-  // <div class="panel panel-trade money">
-  // <div class="bar">
-  //          <img src="./money.png">
-  //          <h1>Money</h1>
-  //          <h4>Information</h4>
-  //      </div>
-  //      <div class="description">
-  //          <p>Money in hand</p>
-  //          <p>Although cash typically refers to money in hand.</p>
-  //          <div class="quantity">
-  //              <img src="./money.png">
-  //              <h4>Current Money</h4>
-  //              <div class="inv-bar">
-  //                  <h1>1250$</h1>
-  //              </div>
-  //          </div>
-  //          <!--
-  //          <div class="price">
-  //              <h4>Total Value <span>2,750,000 Units</span></h4>
-  //              <p>(27,500.0 Units each)</p>
-  //              <div class="u">
-  //                  <div>U</div>
-  //                  <div>U</div>
-  //                  <div>U</div>
-  //                  <div>U</div>
-  //                  <div>U</div>
-  //              </div>
-  //          </div>
-  //         -->
-  //          <hr>
-  //      </div>
-  //      <div class="legend">
-  //          <div>
-  //              <div>a</div>
-  //              <h3>Discard</h3>
-  //              <p>Drop in the ground</p>
-  //          </div>
-  //      </div>
-  //</div>
-
-
   var playerInventory = JSON.parse(listOfItems["data"]);
 
   var list_of_slots = playerInventory
@@ -494,7 +443,7 @@ function generateItemInSlots(listOfItems) {
 
         // now is time to change this in the database to
 
-        fetch(`https://inventory/change_item_position`, {
+         fetch(`https://inventory/change_item_position`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json; charset=UTF-8',
@@ -613,10 +562,10 @@ $(function () {
 
 
 
-  $("#dropQuantityName").click(function () {
+  $("#dropQuantityName").click(async function () {
 
     item_name = $("#dropQuantityName").attr("name");
-    fetch(`https://inventory/drop_items`, {
+    await fetch(`https://inventory/drop_items`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json; charset=UTF-8',
@@ -633,8 +582,8 @@ $(function () {
 
   });
 
-  $("#getQuantityName").click(function () {
-    fetch(`https://inventory/get_item`, {
+  $("#getQuantityName").click(async function () {
+    await fetch(`https://inventory/get_item`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json; charset=UTF-8',
@@ -650,7 +599,7 @@ $(function () {
     closeGetItemMenu();
   });
 
-  $("#exit").click(function () {
+  $("#exit").click(async function () {
     closeDropItemMenu();
     closeGetItemMenu();
     $("#itemsListGround").empty();
@@ -658,7 +607,7 @@ $(function () {
     window.itemsUpdatedOnGround = {};
     window.itemsOnGroundPreview = [];
 
-    fetch(`https://inventory/exit`, {
+    await fetch(`https://inventory/exit`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json; charset=UTF-8',

@@ -49,6 +49,9 @@ namespace inventory.Client
 
         static public void InventoryNui(bool createNewPreviewPed)
         {
+            /*
+            This function handle the construction of inventory environment and call the NUI 
+            */
 
             if (!Inventory.inventoryOpen)
             {
@@ -90,6 +93,11 @@ namespace inventory.Client
 
         private async void OpenNuiEvent()
         {
+
+            /*
+            Entry point of the inventory
+            */
+
             // importing prop for ground objects
             uint box = (uint)GetHashKey("prop_cs_cardbox_01");
             RequestModel(box);
@@ -119,9 +127,10 @@ namespace inventory.Client
                         InventoryNui(true);
                         Inventory.inventoryLoaded = false;
                         Inventory.currentBackPackSizeLoaded = false;
-                        Inventory.setCurrentItemsWeightLoaded = false;
-                        await Delay(1000);
+                        Inventory.setCurrentItemsWeightLoaded = false;    
                     }
+
+                    await Delay(500);
                 }
             }
         }

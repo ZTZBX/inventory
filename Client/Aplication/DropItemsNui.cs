@@ -21,7 +21,6 @@ namespace inventory.Client
             object item;
             object quantity;
 
-
             if (!data.TryGetValue("item", out item)) { return; }
             if (!data.TryGetValue("quantity", out quantity)) { return; }
 
@@ -31,7 +30,6 @@ namespace inventory.Client
             TriggerServerEvent("dropItems", Inventory.currentToken, currentItemName, currentQuantity, Exports["core-ztzbx"].playerUsername());
 
             cb(new { data = "ok" });
-
 
             TriggerServerEvent("getCurrentBackPack", ItemsDroped.CurrectBackPackIdObject);
             TriggerServerEvent("getInventory", Inventory.currentToken);
@@ -81,11 +79,5 @@ namespace inventory.Client
             Inventory.inventoryOpen = true;
 
         }
-
-
-
-
-
-
     }
 }
